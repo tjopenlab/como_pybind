@@ -13,6 +13,7 @@ include_directories(
 add_subdirectory(pybind11)
 pybind11_add_module(como_pybind
     src/main.cpp
+    src/como_bridge.cpp
     src/como_pybind.cpp)
 
 # EXAMPLE_VERSION_INFO is defined by setup.py and passed into the C++ code as a

@@ -14,28 +14,11 @@
 // limitations under the License.
 //=========================================================================
 
-#include <pybind11/numpy.h>
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <comoapi.h>
 #include "como_bridge.h"
+#include <comoapi.h>
 
-using namespace pybind11::literals;
-namespace py = pybind11;
-
-using namespace como;
-
-PYBIND11_MODULE(como_pybind, m) {
-
-    py::class_<MetaComponent>(m, "MetaComponent")
-        .def(py::init<const std::string &>())
-        .def("getName", &MetaComponent::getName)
-
-        // functions in comoreflapi.h
-        .def(
-            "sampleFunction",
-            [](MetaComponent& m, std::string s) {
-                std::string("p");
-            },
-            pybind11::return_value_policy::reference);
+std::string MetaComponent::getName() {
+    String str;
+    componentHandle->GetName(str);
+    return std::string(str.string());
 }

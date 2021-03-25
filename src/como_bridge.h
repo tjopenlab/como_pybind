@@ -14,28 +14,24 @@
 // limitations under the License.
 //=========================================================================
 
-#include <pybind11/numpy.h>
-#include <pybind11/pybind11.h>
+#ifndef __COMO_BRIDGE_H__
+#define __COMO_BRIDGE_H__
+
 #include <pybind11/stl.h>
 #include <comoapi.h>
-#include "como_bridge.h"
 
-using namespace pybind11::literals;
-namespace py = pybind11;
+struct MetaComponent {
+    MetaComponent(const std::string &componentPath_) : componentPath(componentPath_) {
+        String path(componentPath.c_str());
+        AutoPtr<IMetaComponent> mc;
+        CoGetComponentMetadataWithPath(path, nullptr, mc);
+        componentHandle = (IMetaComponent *)mc;
+    }
 
-using namespace como;
+    std::string getName();
 
-PYBIND11_MODULE(como_pybind, m) {
+    std::string componentPath;
+    IMetaComponent *componentHandle;
+};
 
-    py::class_<MetaComponent>(m, "MetaComponent")
-        .def(py::init<const std::string &>())
-        .def("getName", &MetaComponent::getName)
-
-        // functions in comoreflapi.h
-        .def(
-            "sampleFunction",
-            [](MetaComponent& m, std::string s) {
-                std::string("p");
-            },
-            pybind11::return_value_policy::reference);
-}
+#endif
