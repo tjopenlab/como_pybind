@@ -6,32 +6,27 @@ COMO python 绑定库
 #### 软件架构
 软件架构说明
 
-
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+首先进 COMO 工作环境：
+```shell
+- como_linux_x64:       Switch to build como for linux x64.
+- como_linux_aarch64:   Switch to build como for linux aarch64.
+- como_linux_riscv64:   Switch to build como for linux riscv64.
+- como_android_aarch64: Switch to build como for android aarch64.
+- como_openEuler_riscv: Switch to build como for openEuler RISC-V.
+```
+然后，进Anaconda工作环境：
+```shell
+~/home/como/out/target/como.linux.x64.rls$ source ~/anaconda3/bin/activate py36
+```
 
+
+```shell
+pip install ./como_pybind
+```
 #### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+```python
+import como_pybind
+como_pybind.add(1, 2)
+```
