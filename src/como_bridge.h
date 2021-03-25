@@ -23,15 +23,13 @@
 struct MetaComponent {
     MetaComponent(const std::string &componentPath_) : componentPath(componentPath_) {
         String path(componentPath.c_str());
-        AutoPtr<IMetaComponent> mc;
-        CoGetComponentMetadataWithPath(path, nullptr, mc);
-        componentHandle = (IMetaComponent *)mc;
+        CoGetComponentMetadataWithPath(path, nullptr, componentHandle);
     }
 
     std::string getName();
 
     std::string componentPath;
-    IMetaComponent *componentHandle;
+    AutoPtr<IMetaComponent> componentHandle;
 };
 
 #endif
