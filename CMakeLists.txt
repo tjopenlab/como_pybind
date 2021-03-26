@@ -15,8 +15,9 @@ include_directories(
 
 add_subdirectory(pybind11)
 
-add_library(como_pybind MODULE
+# pybind11_add_module, no way to link with comort.so, so do with add_library
 #pybind11_add_module(como_pybind
+add_library(como_pybind MODULE
 #    src/py_test.cpp)
     src/como_bridge.cpp
     ${LIB_comort}
@@ -26,7 +27,10 @@ add_library(como_pybind MODULE
 # define (VERSION_INFO) here.
 target_compile_definitions(como_pybind PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
 
-target_link_libraries(como_pybind
+# output filename style: como_pybind.cpython-38-x86_64-linux-gnu.so
+set_target_properties(como_pybind PROPERTIES PREFIX "" SUFFIX "${PYTHON_MODULE_EXTENSION}")
+
+target_link_libraries(como_pybind PRIVATE
             pybind11::module
             ${LIB_comort}
   )
