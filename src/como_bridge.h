@@ -19,17 +19,58 @@
 
 #include <pybind11/stl.h>
 #include <comoapi.h>
+#include "como_pytypes.h"
 
-struct MetaComponent {
+class MetaConstant;
+class MetaType;
+class MetaValue;
+
+class MetaComponent {
+public:
     MetaComponent(const std::string &componentPath_) : componentPath(componentPath_) {
         String path(componentPath.c_str());
         CoGetComponentMetadataWithPath(path, nullptr, componentHandle);
     }
 
-    std::string getName();
+    std::string GetName();
+    std::string GetComponentID();
+    int GetConstantNumber();
+    ComoArrayIMetaConstant *GetAllConstants();
+    MetaConstant *GetConstant();
 
     std::string componentPath;
+private:
     AutoPtr<IMetaComponent> componentHandle;
+};
+
+class MetaConstant {
+public:
+    MetaConstant(AutoPtr<IMetaConstant> constant_) : constant(constant_) {}
+
+    std::string GetName();
+    std::string GetNamespace();
+    MetaType *GetType();
+    MetaValue *GetValue();
+
+private:
+    AutoPtr<IMetaConstant> constant;
+};
+
+
+class MetaType {
+public:
+    MetaType(AutoPtr<IMetaType> metaType_) : metaType(metaType_) {}
+
+private:
+    AutoPtr<IMetaType> metaType;
+};
+
+class MetaValue {
+public:
+    MetaValue(AutoPtr<IMetaValue> metaValue_) : metaValue(metaValue_) {}
+
+private:
+    AutoPtr<IMetaValue> metaValue;
 };
 
 #endif

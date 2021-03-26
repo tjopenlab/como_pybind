@@ -17,8 +17,52 @@
 #include "como_bridge.h"
 #include <comoapi.h>
 
-std::string MetaComponent::getName() {
+// MetaComponent
+///////////////////////////////
+std::string MetaComponent::GetName() {
     String str;
     componentHandle->GetName(str);
     return std::string(str.string());
+}
+
+std::string MetaComponent::GetComponentID() {
+    String str;
+    componentHandle->GetName(str);
+    return std::string(str.string());
+}
+
+int MetaComponent::GetConstantNumber() {
+    return 0;
+}
+
+ComoArrayIMetaConstant *MetaComponent::GetAllConstants() {
+    Array<IMetaConstant*> consts;
+    componentHandle->GetAllConstants(consts);
+    return new ComoArrayIMetaConstant(consts);
+}
+
+MetaConstant *MetaComponent::GetConstant() {
+    return nullptr;
+}
+
+// MetaConstant
+///////////////////////////////
+std::string MetaConstant::GetName() {
+    String str;
+    constant->GetName(str);
+    return std::string(str.string());
+}
+
+std::string MetaConstant::GetNamespace() {
+    String str;
+    constant->GetNamespace(str);
+    return std::string(str.string());
+}
+
+MetaType *MetaConstant::GetType() {
+    return nullptr;
+}
+
+MetaValue *MetaConstant::GetValue() {
+    return nullptr;
 }

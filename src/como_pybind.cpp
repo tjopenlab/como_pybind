@@ -29,13 +29,23 @@ PYBIND11_MODULE(como_pybind, m) {
 
     py::class_<MetaComponent>(m, "MetaComponent")
         .def(py::init<const std::string &>())
-        .def("getName", &MetaComponent::getName)
-
-        // functions in comoreflapi.h
+        .def("getName", &MetaComponent::GetName)
         .def(
-            "sampleFunction",
-            [](MetaComponent& m, std::string s) {
-                std::string("p");
+            "getConstant",
+            [](MetaComponent& m) {
+                return m.GetConstant();
             },
-            pybind11::return_value_policy::reference);
+            pybind11::return_value_policy::reference)
+        .def(
+            "getAllConstants",
+            [](MetaComponent& m) {
+                return m.GetAllConstants();
+            },
+            pybind11::return_value_policy::reference)
+
+        .def("__repr__",
+            [](const MetaComponent &a) {
+                return "<MetaComponent componentPath '" + a.componentPath + "'>";
+            }
+    );
 }
