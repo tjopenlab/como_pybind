@@ -35,13 +35,13 @@ PYBIND11_MODULE(como_pybind, m) {
             [](MetaComponent& m) {
                 return m.GetConstant();
             },
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::take_ownership)
         .def(
             "getAllConstants",
             [](MetaComponent& m) {
                 return m.GetAllConstants();
             },
-            pybind11::return_value_policy::reference)
+            py::return_value_policy::take_ownership)
 
         .def("__repr__",
             [](const MetaComponent &a) {
