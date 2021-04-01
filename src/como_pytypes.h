@@ -11,4 +11,12 @@ private:
     Array<IMetaConstant*> arr;
 };
 
+class ComoPyClassStub {
+public:
+    ComoPyClassStub(const std::string &className_) : className(className_) {}
+
+private:
+    std::string className;
+};
+
 #endif

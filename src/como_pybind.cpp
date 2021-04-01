@@ -25,7 +25,14 @@ namespace py = pybind11;
 
 using namespace como;
 
+static py::module_ *this_pymodule = nullptr;
+static std::map<std::string, py::class_<ComoPyClassStub>*> como_classes;
+
 PYBIND11_MODULE(como_pybind, m) {
+    this_pymodule = &m;
+
+    py::class_<ComoPyClassStub>(m, "ComoPyClassStub")
+        .def(py::init<const std::string &>());
 
     py::class_<MetaComponent>(m, "MetaComponent")
         .def(py::init<const std::string &>())
