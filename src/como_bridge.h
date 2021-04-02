@@ -25,6 +25,14 @@ class MetaConstant;
 class MetaType;
 class MetaValue;
 
+
+// MetaComponent
+///////////////////////////////
+
+#pragma GCC visibility push(hidden)
+// disable warning: ‘MetaComponent’ declared with greater visibility than the
+// type of its field ‘MetaComponent::como_classes’ [-Wattributes]
+
 class MetaComponent {
 public:
     MetaComponent(const std::string &componentPath_) : componentPath(componentPath_) {
@@ -49,6 +57,10 @@ private:
     AutoPtr<IMetaComponent> componentHandle;
 };
 
+#pragma GCC visibility pop
+
+// MetaConstant
+///////////////////////////////
 class MetaConstant {
 public:
     MetaConstant(AutoPtr<IMetaConstant> constant_) : constant(constant_) {}
@@ -77,6 +89,21 @@ public:
 
 private:
     AutoPtr<IMetaValue> metaValue;
+};
+
+// MetaCoclass
+///////////////////////////////
+class MetaCoclass {
+public:
+    MetaCoclass(AutoPtr<IMetaCoclass> metaCoclass_) : metaCoclass(metaCoclass_) {}
+
+    std::string GetName();
+    std::string GetNamespace();
+    std::string* GetAllMethodsName();
+
+private:
+    AutoPtr<IMetaCoclass> metaCoclass;
+    Array<IMetaMethod*> methods;
 };
 
 #endif

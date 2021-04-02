@@ -33,4 +33,8 @@ using T_COMO_PYCLASS = py::class_<ComoPyClassStub>;
 using TS_COMO_PYCLASS = std::shared_ptr<T_COMO_PYCLASS>;
 using TMAP_COMO_PYCLASSES = std::map<std::string, TS_COMO_PYCLASS>;
 
+// alias<std::string[]>{"hi", "there"};
+template<class T>
+using alias = T;
+
 #endif

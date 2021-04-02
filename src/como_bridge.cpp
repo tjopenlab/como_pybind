@@ -66,3 +66,22 @@ MetaType *MetaConstant::GetType() {
 MetaValue *MetaConstant::GetValue() {
     return nullptr;
 }
+
+// MetaCoclass
+///////////////////////////////
+std::string MetaCoclass::GetName() {
+    String str;
+    metaCoclass->GetName(str);
+    return std::string(str.string());
+}
+
+std::string MetaCoclass::GetNamespace() {
+    String str;
+    metaCoclass->GetNamespace(str);
+    return std::string(str.string());
+}
+
+std::string* GetAllMethodsName() {
+    std::string* pStr = new std::string[3] { "hi", "there"};
+    return pStr;
+}
