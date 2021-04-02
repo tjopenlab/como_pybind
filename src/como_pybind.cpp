@@ -25,20 +25,45 @@ namespace py = pybind11;
 
 using namespace como;
 
+using T_COMO_PYCLASS = py::class_<ComoPyClassStub>;
+using TS_COMO_PYCLASS = std::shared_ptr<T_COMO_PYCLASS>;
+using TMAP_COMO_PYCLASSES = std::map<std::string, TS_COMO_PYCLASS>;
+
 static py::module_ *this_pymodule = nullptr;
-//static std::map<std::string, py::class_<ComoPyClassStub>*> como_classes;
-static std::map<std::string, std::shared_ptr<ComoPyClassStub>> como_classes;
+static TMAP_COMO_PYCLASSES como_classes;
+
+py::class_<MetaComponent> clz0 = py::class_<MetaComponent>(this_pymodule->ptr(), "MetaComponent");
 
 PYBIND11_MODULE(como_pybind, m) {
     this_pymodule = &m;
+    // this_pymodule->ptr() ==> return data type: handle
 
-    py::class_<ComoPyClassStub>(m, "ComoPyClassStub")
-        .def(py::init([](const std::string &str_) {
-            ComoPyClassStub* stub = new ComoPyClassStub(str_);
-            std::shared_ptr<ComoPyClassStub> stub_(stub);
-            como_classes.insert(std::pair<std::string, std::shared_ptr<ComoPyClassStub>>(str_, stub_));
-            return stub;
-        }));
+    for (int i = 0;  i < 10;  i++) {
+        char buf[32];
+        sprintf(buf, "ComoPyClassStub%d", i);
+
+        py::class_<ComoPyClassStub> clz1 = py::class_<ComoPyClassStub>(m, buf)
+            .def(py::init([](const std::string &str_) {
+                ComoPyClassStub* stub = new ComoPyClassStub(str_);
+                return stub;
+            }));
+        TS_COMO_PYCLASS stub_(&clz1);
+        std::string str_1(buf);
+        como_classes.insert(std::pair<std::string, TS_COMO_PYCLASS>(str_1, stub_));
+    }
+
+    for (int i = 0;  i < 10;  i++) {
+        TMAP_COMO_PYCLASSES::const_iterator pos = como_classes.find("string");
+        if (pos == como_classes.end()) {
+            //handle the error
+        } else {
+            TS_COMO_PYCLASS value = pos->second;
+        }
+
+        char buf[32];
+        sprintf(buf, "getName%d", i);
+        clz0.def(buf, &MetaComponent::GetName);
+    }
 
     py::class_<MetaComponent>(m, "MetaComponent")
         .def(py::init<const std::string &>())
