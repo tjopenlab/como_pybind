@@ -15,8 +15,22 @@ class ComoPyClassStub {
 public:
     ComoPyClassStub(const std::string &className_) : className(className_) {}
 
+    int funExample();
+    ECode method1() {
+        IArgumentList* argList;
+        return methods[1]->Invoke(thisObject, argList);
+    }
+
 private:
     std::string className;
+    Array<IMetaMethod*> methods;
+    AutoPtr<IInterface> thisObject;
 };
+
+namespace py = pybind11;
+
+using T_COMO_PYCLASS = py::class_<ComoPyClassStub>;
+using TS_COMO_PYCLASS = std::shared_ptr<T_COMO_PYCLASS>;
+using TMAP_COMO_PYCLASSES = std::map<std::string, TS_COMO_PYCLASS>;
 
 #endif

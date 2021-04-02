@@ -30,6 +30,9 @@ public:
     MetaComponent(const std::string &componentPath_) : componentPath(componentPath_) {
         String path(componentPath.c_str());
         CoGetComponentMetadataWithPath(path, nullptr, componentHandle);
+
+        componentHandle->GetCoclassNumber(classNum);
+        componentHandle->GetCoclassNumber(interfaceNum);
     }
 
     std::string GetName();
@@ -39,6 +42,9 @@ public:
     MetaConstant *GetConstant();
 
     std::string componentPath;
+    int classNum;
+    int interfaceNum;
+    TMAP_COMO_PYCLASSES como_classes;
 private:
     AutoPtr<IMetaComponent> componentHandle;
 };
