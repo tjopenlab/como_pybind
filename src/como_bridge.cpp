@@ -81,7 +81,13 @@ std::string MetaCoclass::GetNamespace() {
     return std::string(str.string());
 }
 
-std::string* GetAllMethodsName() {
+std::string* MetaCoclass::GetAllMethodsName() {
     std::string* pStr = new std::string[3] { "hi", "there"};
     return pStr;
+}
+
+AutoPtr<IInterface> MetaCoclass::CreateObject() {
+    AutoPtr<IInterface> object(nullptr);
+    ECode ec = metaCoclass->CreateObject(IID_IInterface, &object);
+    return object;
 }

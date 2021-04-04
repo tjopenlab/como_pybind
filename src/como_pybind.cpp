@@ -41,9 +41,14 @@ PYBIND11_MODULE(como_pybind, m) {
                 char buf[32];
                 sprintf(buf, "ComoPyClassStub%d", i);
 
+                AutoPtr<IInterface> thisObject = stub->metaCoclass[i].CreateObject();
+
                 py::class_<ComoPyClassStub> clz1 = py::class_<ComoPyClassStub>(m, buf)
-                    .def(py::init([](const std::string &str_) {
-                        ComoPyClassStub* stub = new ComoPyClassStub(str_);
+                    .def(py::init([thisObject](const std::string &str_) {
+
+                        AutoPtr<IInterface> thisObject_(thisObject);
+
+                        ComoPyClassStub* stub = new ComoPyClassStub(str_, thisObject_);
                         return stub;
                     }));
                 TS_COMO_PYCLASS stub_(&clz1);

@@ -24,6 +24,7 @@
 class MetaConstant;
 class MetaType;
 class MetaValue;
+class MetaCoclass;
 
 
 // MetaComponent
@@ -53,6 +54,7 @@ public:
     int classNum;
     int interfaceNum;
     TMAP_COMO_PYCLASSES como_classes;
+    MetaCoclass *metaCoclass;
 private:
     AutoPtr<IMetaComponent> componentHandle;
 };
@@ -100,7 +102,7 @@ public:
     std::string GetName();
     std::string GetNamespace();
     std::string* GetAllMethodsName();
-
+    AutoPtr<IInterface> CreateObject();
 private:
     AutoPtr<IMetaCoclass> metaCoclass;
     Array<IMetaMethod*> methods;

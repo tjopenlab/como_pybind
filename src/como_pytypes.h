@@ -13,7 +13,10 @@ private:
 
 class ComoPyClassStub {
 public:
-    ComoPyClassStub(const std::string &className_) : className(className_) {}
+    ComoPyClassStub(const std::string &className_, AutoPtr<IInterface> thisObject_)
+        : className(className_),
+          thisObject(thisObject_)
+        {}
 
     int funExample();
     ECode method1() {
