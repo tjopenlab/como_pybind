@@ -53,8 +53,8 @@ public:
     std::string componentPath;
     int classNum;
     int interfaceNum;
-    TMAP_COMO_PYCLASSES como_classes;
-    MetaCoclass *metaCoclass;
+    std::map<std::string, MetaCoclass*> como_classes;
+    MetaCoclass **metaCoclass;
 private:
     AutoPtr<IMetaComponent> componentHandle;
 };

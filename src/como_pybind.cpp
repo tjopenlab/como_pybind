@@ -26,6 +26,7 @@ namespace py = pybind11;
 using namespace como;
 
 static py::module_ *this_pymodule = nullptr;
+static MetaComponent *metaComponent = nullptr;
 
 PYBIND11_MODULE(como_pybind, m) {
     this_pymodule = &m;
@@ -36,40 +37,39 @@ PYBIND11_MODULE(como_pybind, m) {
     // load COMO component meta data
     py::class_<MetaComponent> pymc = py::class_<MetaComponent>(m, "MetaComponent");
     pymc.def(py::init([m](const std::string &str_) {
-            MetaComponent* stub = new MetaComponent(str_);
-            for (int i = 0;  i < stub->classNum;  i++) {
-                char buf[32];
-                sprintf(buf, "ComoPyClassStub%d", i);
+            metaComponent = new MetaComponent(str_);
 
-                AutoPtr<IInterface> thisObject = stub->metaCoclass[i].CreateObject();
+            std::map<std::string, MetaCoclass*>::iterator iter;
+            for(iter = metaComponent->como_classes.begin();  iter != metaComponent->como_classes.end();  iter++) {
+                MetaCoclass *metaCoclass = iter->second;
+                std::string className = std::string(metaCoclass->GetName());
 
-                py::class_<ComoPyClassStub> clz1 = py::class_<ComoPyClassStub>(m, buf)
-                    .def(py::init([thisObject](const std::string &str_) {
+                py::class_<ComoPyClassStub> clz_ = py::class_<ComoPyClassStub>(m, className.c_str())
+                    .def(py::init([](const std::string &str_) {
 
-                        AutoPtr<IInterface> thisObject_(thisObject);
+                        // the MetaCoclass cann't be accepted from outer program,
+                        // for these constructors are created dynamically
+                        MetaCoclass *metacc = nullptr;
+                        std::map<std::string, MetaCoclass*>::const_iterator pos = metaComponent->como_classes.find("className");
+                        if (pos == metaComponent->como_classes.end()) {
+                            //handle the error
+                        } else {
+                            metacc = pos->second;
+                        }
 
-                        ComoPyClassStub* stub = new ComoPyClassStub(str_, thisObject_);
+                        AutoPtr<IInterface> thisObject = metacc->CreateObject();
+                        ComoPyClassStub* stub = new ComoPyClassStub(str_, thisObject);
                         return stub;
                     }));
-                TS_COMO_PYCLASS stub_(&clz1);
-                std::string str_1(buf);
-                stub->como_classes.insert(std::pair<std::string, TS_COMO_PYCLASS>(str_1, stub_));
-                /*
-                TS_COMO_PYCLASS clz0;
-                TMAP_COMO_PYCLASSES::const_iterator pos = stub->como_classes.find("className");
-                if (pos == stub->como_classes.end()) {
-                    //handle the error
-                } else {
-                    clz0 = pos->second;
-                }
-                */
+                metaComponent->como_classes.insert(std::pair<std::string, MetaCoclass*>(className, metaCoclass));
 
-                for (int j = 0;  j < stub->interfaceNum; j++) {
-                    sprintf(buf, "method%d", i);
-                    clz1.def(buf, &ComoPyClassStub::method1);
+                char buf[16];
+                for (int j = 0;  j < metaComponent->interfaceNum; j++) {
+                    sprintf(buf, "method%d", j);
+                    clz_.def(buf, &ComoPyClassStub::method1);
                 }
             }
-            return stub;
+            return metaComponent;
         }))
         .def("getName", &MetaComponent::GetName)
         .def(
