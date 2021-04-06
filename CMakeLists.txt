@@ -11,6 +11,7 @@ find_library(LIB_comort comort.so)
 include_directories(
     ./
     ${INC_DIR}
+    pybind11/include
     )
 
 add_subdirectory(pybind11)
