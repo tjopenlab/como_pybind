@@ -5,7 +5,7 @@ set(OBJ_DIR $ENV{OUT_PATH})
 set(BIN_DIR $ENV{BIN_PATH})
 set(INC_DIR ${BIN_DIR}/inc)
 
-find_library(LIB_comort comort.so)
+find_library(LIB_comort comort.so "${BIN_DIR}")
 # message(STATUS "LIB_comort = ${LIB_comort}")
 
 include_directories(
