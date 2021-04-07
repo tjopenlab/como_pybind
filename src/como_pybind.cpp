@@ -50,7 +50,7 @@ PYBIND11_MODULE(como_pybind, m) {
                         // the MetaCoclass cann't be accepted from outer program,
                         // for these constructors are created dynamically
                         MetaCoclass *metacc = nullptr;
-                        std::map<std::string, MetaCoclass*>::const_iterator pos = metaComponent->como_classes.find("className");
+                        std::map<std::string, MetaCoclass*>::const_iterator pos = metaComponent->como_classes.find(str_);
                         if (pos == metaComponent->como_classes.end()) {
                             //handle the error
                         } else {
@@ -65,8 +65,10 @@ PYBIND11_MODULE(como_pybind, m) {
 
                 char buf[16];
                 for (int j = 0;  j < metaComponent->interfaceNum; j++) {
-                    sprintf(buf, "method%d", j);
-                    clz_.def(buf, &ComoPyClassStub::method1);
+                    sprintf(buf, "m%d", j);
+                    clz_.def(buf, [](ComoPyClassStub *thisObj, py::args args, py::kwargs kwargs) {
+                        return thisObj->methodimpl(thisObj, args, kwargs);
+                    });
                 }
             }
             return metaComponent;

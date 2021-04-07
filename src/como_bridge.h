@@ -54,8 +54,8 @@ public:
     int classNum;
     int interfaceNum;
     std::map<std::string, MetaCoclass*> como_classes;
-    MetaCoclass **metaCoclass;
 private:
+    void GetAllCoclasses();
     AutoPtr<IMetaComponent> componentHandle;
 };
 

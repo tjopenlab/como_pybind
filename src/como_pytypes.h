@@ -2,6 +2,9 @@
 #define __COMO_PYTYPES_H__
 
 #include <comoapi.h>
+#include <pybind11/pybind11.h>
+
+namespace py = pybind11;
 
 class ComoArrayIMetaConstant {
 public:
@@ -18,12 +21,12 @@ public:
           thisObject(thisObject_)
         {}
 
-    int funExample();
-    ECode method1() {
+    int methodimpl(ComoPyClassStub *thisObj, py::args args, py::kwargs kwargs) {
         IArgumentList* argList;
         return methods[1]->Invoke(thisObject, argList);
     }
 
+    int m1(py::args args, py::kwargs kwargs) {}//method(1)}
 private:
     std::string className;
     Array<IMetaMethod*> methods;

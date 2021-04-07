@@ -45,6 +45,22 @@ MetaConstant *MetaComponent::GetConstant() {
     return nullptr;
 }
 
+void MetaComponent::GetAllCoclasses() {
+    Integer number;
+    componentHandle->GetCoclassNumber(number);
+    Array<IMetaCoclass*> klasses(number);
+    componentHandle->GetAllCoclasses(klasses);
+    for (int i = 0;  i < number;  i++) {
+        String name;
+        klasses[i]->GetName(name);
+        std::string className = std::string(name);
+
+        MetaCoclass *metaCoclass;
+        metaCoclass = new MetaCoclass(klasses[i]);
+        como_classes.insert(std::pair<std::string, MetaCoclass*>(className, metaCoclass));
+    }
+}
+
 // MetaConstant
 ///////////////////////////////
 std::string MetaConstant::GetName() {
