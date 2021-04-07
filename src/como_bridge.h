@@ -97,12 +97,17 @@ private:
 ///////////////////////////////
 class MetaCoclass {
 public:
-    MetaCoclass(AutoPtr<IMetaCoclass> metaCoclass_) : metaCoclass(metaCoclass_) {}
+    MetaCoclass(AutoPtr<IMetaCoclass> metaCoclass_) : metaCoclass(metaCoclass_) {
+        metaCoclass_->GetAllMethods(methods);
+    }
 
     std::string GetName();
     std::string GetNamespace();
-    std::string* GetAllMethodsName();
+    std::string GetMethodName(int idxMethod);
     AutoPtr<IInterface> CreateObject();
+
+    int GetMethodNumber();
+
 private:
     AutoPtr<IMetaCoclass> metaCoclass;
     Array<IMetaMethod*> methods;
