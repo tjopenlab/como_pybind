@@ -288,20 +288,11 @@ for i in range(255):
 #undef LAMBDA_FOR_METHOD
 
 private:
-    int methodimpl(int idxMethod, py::args args, py::kwargs kwargs) {
-        IArgumentList* argList;
-        return methods[1]->Invoke(thisObject, argList);
-    }
+    int methodimpl(int idxMethod, py::args args, py::kwargs kwargs);
 
     std::string className;
     Array<IMetaMethod*> methods;
     AutoPtr<IInterface> thisObject;
 };
-
-namespace py = pybind11;
-
-// alias<std::string[]>{"hi", "there"};
-template<class T>
-using alias = T;
 
 #endif

@@ -116,3 +116,15 @@ AutoPtr<IInterface> MetaCoclass::CreateObject() {
     ECode ec = metaCoclass->CreateObject(IID_IInterface, &object);
     return object;
 }
+
+
+// ComoPyClassStub
+///////////////////////////////
+
+/*
+The class py::args derives from py::tuple and py::kwargs derives from py::dict.
+*/
+int ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs kwargs) {
+    IArgumentList* argList;
+    return methods[1]->Invoke(thisObject, argList);
+}

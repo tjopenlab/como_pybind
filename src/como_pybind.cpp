@@ -31,11 +31,8 @@ static MetaComponent *metaComponent = nullptr;
 PYBIND11_MODULE(como_pybind, m) {
     this_pymodule = &m;
 
-    // this_pymodule->ptr() ==> return data type: handle
-    // py::class_<MetaComponent> clz2 = py::class_<MetaComponent>(this_pymodule->ptr(), "MetaComponent");
-
     // load COMO component meta data
-    py::class_<MetaComponent> pymc = py::class_<MetaComponent>(m, "MetaComponent");
+    py::class_<MetaComponent> pymc = py::class_<MetaComponent>(m, "como");
     pymc.def(py::init([m](const std::string &str_) {
             metaComponent = new MetaComponent(str_);
 
@@ -64,7 +61,6 @@ PYBIND11_MODULE(como_pybind, m) {
                 metaComponent->como_classes.insert(std::pair<std::string, MetaCoclass*>(className, metaCoclass));
 
                 Array<IMetaMethod*> methods;
-                char buf[16];
                 int methodNumber;
                 methodNumber = metaCoclass->GetMethodNumber();
                 for (int j = 0;  j < methodNumber; j++) {
