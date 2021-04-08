@@ -21,9 +21,9 @@ public:
           thisObject(thisObject_)
         {}
 
-#define LAMBDA_FOR_METHOD(_NO_)                                                         \
-    static int m##_NO_(ComoPyClassStub *thisObj, py::args args, py::kwargs kwargs) {    \
-        return thisObj->methodimpl(_NO_, args, kwargs);                                 \
+#define LAMBDA_FOR_METHOD(_NO_)                                                             \
+    static py::tuple m##_NO_(ComoPyClassStub *thisObj, py::args args, py::kwargs kwargs) {  \
+        return thisObj->methodimpl(_NO_, args, kwargs);                                     \
     }
 
 /*python script:
@@ -288,7 +288,7 @@ for i in range(255):
 #undef LAMBDA_FOR_METHOD
 
 private:
-    int methodimpl(int idxMethod, py::args args, py::kwargs kwargs);
+    py::tuple methodimpl(int idxMethod, py::args args, py::kwargs kwargs);
 
     std::string className;
     Array<IMetaMethod*> methods;
