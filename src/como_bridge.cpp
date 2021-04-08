@@ -139,7 +139,7 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
     method->GetParameterNumber(paramNumber);
 
     py::tuple out_tuple;
-    HANDLE *outResult;
+    HANDLE *outResult = nullptr;
     if (outArgs) {
         py::tuple out_tuple = py::make_tuple();
         outResult = (HANDLE*)calloc(sizeof(HANDLE), paramNumber);
@@ -254,7 +254,7 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
 
     ECode ec = methods[1]->Invoke(thisObject, argList);
 
-    if (outArgs) {
+    if (outArgs && (outResult != nullptr)) {
         // collect output results into out_tuple
         for (Integer i = 0; i < paramNumber; i++) {
             IMetaParameter* param = params[i];
