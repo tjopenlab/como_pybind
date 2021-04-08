@@ -130,6 +130,7 @@ access data from args:
     printf("%d", int(py::int_(kwargs["get"])));
 */
 py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs kwargs) {
+    ECode ec = 0;
     AutoPtr<IArgumentList> argList;
     AutoPtr<IMetaMethod> method(methods[idxMethod]);
 
@@ -148,6 +149,7 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
     method->CreateArgumentList(argList);
     Array<IMetaParameter*> params(paramNumber);
     method->GetAllParameters(params);
+    Integer inParam = 0;
     for (Integer i = 0; i < paramNumber; i++) {
         IMetaParameter* param = params[i];
 
@@ -165,34 +167,40 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
         type->GetName(tname);
         type->GetTypeKind(kind);
 
+        if (inParam >= args.size()) {
+            // too much COMO input paramter
+            ec = E_ILLEGAL_ARGUMENT_EXCEPTION;
+            break;
+        }
+
         if (attr == IOAttribute::IN) {
             switch (kind) {
                 case TypeKind::Byte:
-                    argList->SetInputArgumentOfByte(i, int(py::int_(args[i])));
+                    argList->SetInputArgumentOfByte(i, int(py::int_(args[inParam])));
                     break;
                 case TypeKind::Short:
-                    argList->SetInputArgumentOfShort(i, int(py::int_(args[i])));
+                    argList->SetInputArgumentOfShort(i, int(py::int_(args[inParam])));
                     break;
                 case TypeKind::Integer:
-                    argList->SetInputArgumentOfInteger(i, int(py::int_(args[i])));
+                    argList->SetInputArgumentOfInteger(i, int(py::int_(args[inParam])));
                     break;
                 case TypeKind::Long:
-                    argList->SetInputArgumentOfLong(i, int(py::int_(args[i])));
+                    argList->SetInputArgumentOfLong(i, int(py::int_(args[inParam])));
                     break;
                 case TypeKind::Float:
-                    argList->SetInputArgumentOfFloat(i, float(py::float_(args[i])));
+                    argList->SetInputArgumentOfFloat(i, float(py::float_(args[inParam])));
                     break;
                 case TypeKind::Double:
-                    argList->SetInputArgumentOfDouble(i, float(py::float_(args[i])));
+                    argList->SetInputArgumentOfDouble(i, float(py::float_(args[inParam])));
                     break;
                 case TypeKind::Char:
-                    argList->SetInputArgumentOfChar(i, int(py::int_(args[i])));
+                    argList->SetInputArgumentOfChar(i, int(py::int_(args[inParam])));
                     break;
                 case TypeKind::Boolean:
-                    argList->SetInputArgumentOfBoolean(i, Boolean(py::bool_(args[i])));
+                    argList->SetInputArgumentOfBoolean(i, Boolean(py::bool_(args[inParam])));
                     break;
                 case TypeKind::String:
-                    argList->SetInputArgumentOfString(i, String(std::string(py::str(args[i])).c_str()));
+                    argList->SetInputArgumentOfString(i, String(std::string(py::str(args[inParam])).c_str()));
                     break;
                 case TypeKind::HANDLE:
                 case TypeKind::CoclassID:
@@ -202,6 +210,7 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                 case TypeKind::Unknown:
                     break;
             }
+            inParam++;
         }
         else /*if (attr == IOAttribute::OUT)*/ {
             switch (kind) {
@@ -252,7 +261,9 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
         }
     }
 
-    ECode ec = methods[1]->Invoke(thisObject, argList);
+    if (ec == 0) {
+        ec = methods[1]->Invoke(thisObject, argList);
+    }
 
     if (outArgs && (outResult != nullptr)) {
         // collect output results into out_tuple
