@@ -17,7 +17,8 @@ mc = como_pybind.como('ReflectionTestUnit.so')
 name = mc.getName();
 print ('name is: ' + name)
 
-#cmt = como_pybind.CMethodTester()
-cmt = mc.CMethodTester()
+cmt = como_pybind.CMethodTester('CMethodTester')
+print ('load COMO class CMethodTester')
+
 cmt.TestMethod1(2021)
 
