@@ -123,11 +123,6 @@ AutoPtr<IInterface> MetaCoclass::CreateObject() {
 
 /*
 The class py::args derives from py::tuple and py::kwargs derives from py::dict.
-
-access data from args:
-    printf("%d", int(py::int_(args[0])));
-    printf("%d", int(args[0].cast<py::int_>()));
-    printf("%d", int(py::int_(kwargs["get"])));
 */
 py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs kwargs) {
     ECode ec = 0;
@@ -176,31 +171,58 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
         if (attr == IOAttribute::IN) {
             switch (kind) {
                 case TypeKind::Byte:
-                    argList->SetInputArgumentOfByte(i, int(py::int_(args[inParam])));
+                    if (kwargs.contains(name.string()))
+                        argList->SetInputArgumentOfByte(i, int(py::int_(kwargs[name.string()])));
+                    else
+                        argList->SetInputArgumentOfByte(i, int(py::int_(args[inParam++])));
                     break;
                 case TypeKind::Short:
-                    argList->SetInputArgumentOfShort(i, int(py::int_(args[inParam])));
+                    if (kwargs.contains(name.string()))
+                        argList->SetInputArgumentOfShort(i, int(py::int_(kwargs[name.string()])));
+                    else
+                        argList->SetInputArgumentOfShort(i, int(py::int_(args[inParam++])));
                     break;
                 case TypeKind::Integer:
-                    argList->SetInputArgumentOfInteger(i, int(py::int_(args[inParam])));
+                    if (kwargs.contains(name.string()))
+                        argList->SetInputArgumentOfInteger(i, int(py::int_(kwargs[name.string()])));
+                    else
+                        argList->SetInputArgumentOfInteger(i, int(py::int_(args[inParam++])));
                     break;
                 case TypeKind::Long:
-                    argList->SetInputArgumentOfLong(i, int(py::int_(args[inParam])));
+                    if (kwargs.contains(name.string()))
+                        argList->SetInputArgumentOfLong(i, int(py::int_(kwargs[name.string()])));
+                    else
+                        argList->SetInputArgumentOfLong(i, int(py::int_(args[inParam++])));
                     break;
                 case TypeKind::Float:
-                    argList->SetInputArgumentOfFloat(i, float(py::float_(args[inParam])));
+                    if (kwargs.contains(name.string()))
+                        argList->SetInputArgumentOfFloat(i, float(py::float_(kwargs[name.string()])));
+                    else
+                        argList->SetInputArgumentOfFloat(i, float(py::float_(args[inParam++])));
                     break;
                 case TypeKind::Double:
-                    argList->SetInputArgumentOfDouble(i, float(py::float_(args[inParam])));
+                    if (kwargs.contains(name.string()))
+                        argList->SetInputArgumentOfDouble(i, float(py::float_(kwargs[name.string()])));
+                    else
+                        argList->SetInputArgumentOfDouble(i, float(py::float_(args[inParam++])));
                     break;
                 case TypeKind::Char:
-                    argList->SetInputArgumentOfChar(i, int(py::int_(args[inParam])));
+                    if (kwargs.contains(name.string()))
+                        argList->SetInputArgumentOfChar(i, int(py::int_(kwargs[name.string()])));
+                    else
+                        argList->SetInputArgumentOfChar(i, int(py::int_(args[inParam++])));
                     break;
                 case TypeKind::Boolean:
-                    argList->SetInputArgumentOfBoolean(i, Boolean(py::bool_(args[inParam])));
+                    if (kwargs.contains(name.string()))
+                        argList->SetInputArgumentOfBoolean(i, int(py::int_(kwargs[name.string()])));
+                    else
+                        argList->SetInputArgumentOfBoolean(i, Boolean(py::bool_(args[inParam++])));
                     break;
                 case TypeKind::String:
-                    argList->SetInputArgumentOfString(i, String(std::string(py::str(args[inParam])).c_str()));
+                    if (kwargs.contains(name.string()))
+                        argList->SetInputArgumentOfString(i, String(std::string(py::str(kwargs[name.string()])).c_str()));
+                    else
+                        argList->SetInputArgumentOfString(i, String(std::string(py::str(args[inParam++])).c_str()));
                     break;
                 case TypeKind::HANDLE:
                 case TypeKind::CoclassID:
@@ -208,9 +230,9 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                 case TypeKind::InterfaceID:
                 case TypeKind::Interface:
                 case TypeKind::Unknown:
+                    inParam++;
                     break;
             }
-            inParam++;
         }
         else /*if (attr == IOAttribute::OUT)*/ {
             switch (kind) {
@@ -313,7 +335,7 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                         free(reinterpret_cast<void*>(outResult[i]));
                         break;
                     case TypeKind::String:
-                        out_tuple = py::make_tuple(out_tuple, *(reinterpret_cast<String*>(outResult[i])));
+                        out_tuple = py::make_tuple(out_tuple, std::string((*reinterpret_cast<String*>(outResult[i])).string()));
                         free(reinterpret_cast<void*>(outResult[i]));
                         break;
                     case TypeKind::HANDLE:
