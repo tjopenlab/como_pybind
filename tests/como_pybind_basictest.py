@@ -1,6 +1,23 @@
 # -*- coding: utf-8 -*-
-import como_pybind
 
-mc = como_pybind.MetaComponent('ReflectionTestUnit.so')
+'''
+$ source build/envsetup.sh
+$ como_linux_x64
+$ source ~/anaconda3/bin/activate py36
+
+$ export PYTHONPATH=$PYTHONPATH:/home/xilong/como/como_pybind/pybind11/pybind11
+$ export LIB_PATH=$LIB_PATH:$BIN_PATH
+'''
+
+import como_pybind
+import os, sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
+
+mc = como_pybind.como('ReflectionTestUnit.so')
 name = mc.getName();
 print ('name is: ' + name)
+
+#cmt = como_pybind.CMethodTester()
+cmt = mc.CMethodTester()
+cmt.TestMethod1(2021)
+

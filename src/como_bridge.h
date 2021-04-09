@@ -39,9 +39,7 @@ public:
     MetaComponent(const std::string &componentPath_) : componentPath(componentPath_) {
         String path(componentPath.c_str());
         CoGetComponentMetadataWithPath(path, nullptr, componentHandle);
-
-        componentHandle->GetCoclassNumber(classNum);
-        componentHandle->GetCoclassNumber(interfaceNum);
+        GetAllCoclasses();
     }
 
     std::string GetName();
@@ -51,8 +49,6 @@ public:
     MetaConstant *GetConstant();
 
     std::string componentPath;
-    int classNum;
-    int interfaceNum;
     std::map<std::string, MetaCoclass*> como_classes;
 private:
     void GetAllCoclasses();
