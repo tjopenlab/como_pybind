@@ -177,13 +177,12 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
         type->GetName(tname);
         type->GetTypeKind(kind);
 
-        if (inParam >= args.size()) {
-            // too much COMO input paramter
-            ec = E_ILLEGAL_ARGUMENT_EXCEPTION;
-            break;
-        }
-
         if (attr == IOAttribute::IN) {
+            if (inParam >= args.size()) {
+                // too much COMO input paramter
+                ec = E_ILLEGAL_ARGUMENT_EXCEPTION;
+                break;
+            }
             switch (kind) {
                 case TypeKind::Byte:
                     if (kwargs.contains(name.string()))
@@ -299,7 +298,7 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
     }
 
     if (ec == 0) {
-        ec = methods[1]->Invoke(thisObject, argList);
+        ec = method->Invoke(thisObject, argList);
     }
 
     if (outArgs && (outResult != nullptr)) {
