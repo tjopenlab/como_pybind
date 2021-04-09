@@ -21,9 +21,9 @@ public:
           thisObject(thisObject_)
         {}
 
-#define LAMBDA_FOR_METHOD(_NO_)                                                             \
-    static py::tuple m##_NO_(ComoPyClassStub *thisObj, py::args args, py::kwargs kwargs) {  \
-        return thisObj->methodimpl(_NO_, args, kwargs);                                     \
+#define LAMBDA_FOR_METHOD(_NO_)                             \
+    py::tuple m##_NO_(py::args args, py::kwargs kwargs) {   \
+        return methodimpl(_NO_, args, kwargs);              \
     }
 
 /*python script:

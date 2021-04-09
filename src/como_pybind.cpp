@@ -67,11 +67,9 @@ PYBIND11_MODULE(como_pybind, m) {
                     const char *str = metaCoclass->GetMethodName(j).c_str();
                     switch (j) {
 
-#define LAMBDA_FOR_METHOD(_NO_) \
-                        case _NO_:                                                                                      \
-                            clz_.def(str, [](ComoPyClassStub *thisObj, py::args args, py::kwargs kwargs) -> py::tuple { \
-                                return ComoPyClassStub::m##_NO_(thisObj, args, kwargs);                                 \
-                            });                                                                                         \
+#define LAMBDA_FOR_METHOD(_NO_)                                         \
+                        case _NO_:                                      \
+                            clz_.def(str, &ComoPyClassStub::m##_NO_);   \
                             break;
 /*python script:
 for i in range(255):
