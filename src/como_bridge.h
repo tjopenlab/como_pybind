@@ -94,7 +94,14 @@ private:
 class MetaCoclass {
 public:
     MetaCoclass(AutoPtr<IMetaCoclass> metaCoclass_) : metaCoclass(metaCoclass_) {
-        metaCoclass_->GetAllMethods(methods);
+        Integer methodNumber;
+        metaCoclass_->GetMethodNumber(methodNumber);
+        Array<IMetaMethod*> methods_(methodNumber);
+        ECode ec = metaCoclass_->GetAllMethods(methods_);
+        if (FAILED(ec)) {
+            //
+        }
+        methods = methods_;
     }
 
     std::string GetName();
