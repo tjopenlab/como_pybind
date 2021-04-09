@@ -16,10 +16,7 @@ private:
 
 class ComoPyClassStub {
 public:
-    ComoPyClassStub(const std::string &className_, AutoPtr<IInterface> thisObject_)
-        : className(className_),
-          thisObject(thisObject_)
-        {}
+    ComoPyClassStub(const std::string &className_, AutoPtr<IInterface> thisObject_);
 
 #define LAMBDA_FOR_METHOD(_NO_)                             \
     py::tuple m##_NO_(py::args args, py::kwargs kwargs) {   \

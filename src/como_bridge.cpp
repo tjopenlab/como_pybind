@@ -121,14 +121,29 @@ AutoPtr<IInterface> MetaCoclass::CreateObject() {
 // ComoPyClassStub
 ///////////////////////////////
 
+ComoPyClassStub::ComoPyClassStub(const std::string &className_, AutoPtr<IInterface> thisObject_)
+        : className(className_),
+          thisObject(thisObject_)
+{
+    AutoPtr<IMetaCoclass> metaCoclass_;
+    IObject::Probe(thisObject_)->GetCoclass(metaCoclass_);
+    Integer methodNumber;
+    metaCoclass_->GetMethodNumber(methodNumber);
+    Array<IMetaMethod*> methods_(methodNumber);
+    ECode ec = metaCoclass_->GetAllMethods(methods_);
+    if (FAILED(ec)) {
+        //
+    }
+    methods = methods_;
+}
+
 /*
 The class py::args derives from py::tuple and py::kwargs derives from py::dict.
 */
 py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs kwargs) {
     ECode ec = 0;
     AutoPtr<IArgumentList> argList;
-    AutoPtr<IMetaMethod> method(methods[idxMethod]);
-
+    IMetaMethod *method = methods[idxMethod];
     Boolean outArgs;
     Integer paramNumber;
     method->HasOutArguments(outArgs);
