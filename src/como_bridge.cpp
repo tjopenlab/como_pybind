@@ -123,14 +123,17 @@ AutoPtr<IInterface> MetaCoclass::CreateObject() {
 ComoPyClassStub::ComoPyClassStub(AutoPtr<IInterface> thisObject_)
         : thisObject(thisObject_)
 {
-    AutoPtr<IMetaCoclass> metaCoclass_;
-    IObject::Probe(thisObject_)->GetCoclass(metaCoclass_);
+    AutoPtr<IMetaCoclass> mCoclass_;
+    IObject::Probe(thisObject_)->GetCoclass(mCoclass_);
     Integer methodNumber;
-    metaCoclass_->GetMethodNumber(methodNumber);
+    mCoclass_->GetMethodNumber(methodNumber);
     Array<IMetaMethod*> methods_(methodNumber);
-    ECode ec = metaCoclass_->GetAllMethods(methods_);
+    ECode ec = mCoclass_->GetAllMethods(methods_);
     if (FAILED(ec)) {
-        //
+        String str;
+        mCoclass_->GetName(str);
+        std::string className = std::string(str.string());
+        throw std::runtime_error("COMO class GetAllMethods: " + className);
     }
     methods = methods_;
 }

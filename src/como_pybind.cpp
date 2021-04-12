@@ -43,17 +43,18 @@ PYBIND11_MODULE(como_pybind, m) {
                 py::class_<ComoPyClassStub> clz_ = py::class_<ComoPyClassStub>(m, className.c_str());
                 switch (i) {
 
-#define LAMBDA_FOR_CLASS_INIT(_NO_)                                                         \
-                    case _NO_:                                                              \
-                        clz_.def(py::init([]() {                                            \
-                            MetaCoclass *metacc = metaComponent->como_classes[_NO_];        \
-                            AutoPtr<IInterface> thisObject = metacc->CreateObject();        \
-                            if (thisObject == nullptr) {                                    \
-                                ;                                                           \
-                            }                                                               \
-                            ComoPyClassStub* stub = new ComoPyClassStub(thisObject);        \
-                            return stub;                                                    \
-                        }));                                                                \
+#define LAMBDA_FOR_CLASS_INIT(_NO_)                                                                 \
+                    case _NO_:                                                                      \
+                        clz_.def(py::init([]() {                                                    \
+                            MetaCoclass *metacc = metaComponent->como_classes[_NO_];                \
+                            AutoPtr<IInterface> thisObject = metacc->CreateObject();                \
+                            if (thisObject == nullptr) {                                            \
+                                std::string className = std::string(metacc->GetName());             \
+                                throw std::runtime_error("initialize COMO class: " + className);    \
+                            }                                                                       \
+                            ComoPyClassStub* stub = new ComoPyClassStub(thisObject);                \
+                            return stub;                                                            \
+                        }));                                                                        \
                         break;
 
 #include "LAMBDA_FOR_CLASS_INIT.inc"
