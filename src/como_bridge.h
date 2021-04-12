@@ -49,7 +49,7 @@ public:
     MetaConstant *GetConstant();
 
     std::string componentPath;
-    std::map<std::string, MetaCoclass*> como_classes;
+    std::vector<MetaCoclass*> como_classes;
 private:
     void GetAllCoclasses();
     AutoPtr<IMetaComponent> componentHandle;

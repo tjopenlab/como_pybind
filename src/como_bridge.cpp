@@ -51,13 +51,9 @@ void MetaComponent::GetAllCoclasses() {
     Array<IMetaCoclass*> klasses(number);
     componentHandle->GetAllCoclasses(klasses);
     for (int i = 0;  i < number;  i++) {
-        String name;
-        klasses[i]->GetName(name);
-        std::string className = std::string(name);
-
         MetaCoclass *metaCoclass;
         metaCoclass = new MetaCoclass(klasses[i]);
-        como_classes.insert(std::pair<std::string, MetaCoclass*>(className, metaCoclass));
+        como_classes.push_back(metaCoclass);
     }
 }
 
@@ -114,6 +110,9 @@ std::string MetaCoclass::GetMethodName(int idxMethod) {
 AutoPtr<IInterface> MetaCoclass::CreateObject() {
     AutoPtr<IInterface> object(nullptr);
     ECode ec = metaCoclass->CreateObject(IID_IInterface, &object);
+    if (FAILED(ec)) {
+        return nullptr;
+    }
     return object;
 }
 
@@ -121,9 +120,8 @@ AutoPtr<IInterface> MetaCoclass::CreateObject() {
 // ComoPyClassStub
 ///////////////////////////////
 
-ComoPyClassStub::ComoPyClassStub(const std::string &className_, AutoPtr<IInterface> thisObject_)
-        : className(className_),
-          thisObject(thisObject_)
+ComoPyClassStub::ComoPyClassStub(AutoPtr<IInterface> thisObject_)
+        : thisObject(thisObject_)
 {
     AutoPtr<IMetaCoclass> metaCoclass_;
     IObject::Probe(thisObject_)->GetCoclass(metaCoclass_);
