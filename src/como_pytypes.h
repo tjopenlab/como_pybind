@@ -6,14 +6,6 @@
 
 namespace py = pybind11;
 
-class ComoArrayIMetaConstant {
-public:
-    ComoArrayIMetaConstant(Array<IMetaConstant*>& arr_) : arr(arr_) {}
-
-private:
-    Array<IMetaConstant*> arr;
-};
-
 class ComoPyClassStub {
 public:
     ComoPyClassStub(AutoPtr<IInterface> thisObject_);

@@ -45,7 +45,7 @@ public:
     std::string GetName();
     std::string GetComponentID();
     int GetConstantNumber();
-    ComoArrayIMetaConstant *GetAllConstants();
+    std::map<std::string, py::object> GetAllConstants();
     MetaConstant *GetConstant();
 
     std::string componentPath;

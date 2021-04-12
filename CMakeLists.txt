@@ -21,6 +21,7 @@ add_subdirectory(pybind11)
 add_library(como_pybind MODULE
 #    src/py_test.cpp)
     src/como_bridge.cpp
+    src/utils.cpp
     ${LIB_comort}
     src/como_pybind.cpp)
 

@@ -14,8 +14,9 @@
 // limitations under the License.
 //=========================================================================
 
-#include "como_bridge.h"
 #include <comoapi.h>
+#include "como_bridge.h"
+#include "utils.h"
 
 // MetaComponent
 ///////////////////////////////
@@ -35,10 +36,13 @@ int MetaComponent::GetConstantNumber() {
     return 0;
 }
 
-ComoArrayIMetaConstant *MetaComponent::GetAllConstants() {
-    Array<IMetaConstant*> consts;
-    componentHandle->GetAllConstants(consts);
-    return new ComoArrayIMetaConstant(consts);
+std::map<std::string, py::object> MetaComponent::GetAllConstants() {
+    Integer constantNumber;
+    componentHandle->GetConstantNumber(constantNumber);
+    Array<IMetaConstant*> constants(constantNumber);
+    componentHandle->GetAllConstants(constants);
+
+    return constantsToMap(constants);
 }
 
 MetaConstant *MetaComponent::GetConstant() {

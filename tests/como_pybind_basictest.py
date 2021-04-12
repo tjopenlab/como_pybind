@@ -21,4 +21,3 @@ cmt = como_pybind.CMethodTester()
 print ('load COMO class CMethodTester')
 
 cmt.TestMethod1(2021)
-
