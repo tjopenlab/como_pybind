@@ -97,13 +97,11 @@ std::string MetaCoclass::GetNamespace() {
     return std::string(str.string());
 }
 
-
 int MetaCoclass::GetMethodNumber() {
     int methodNumber;
     metaCoclass->GetMethodNumber(methodNumber);
     return methodNumber;
 }
-
 
 std::string MetaCoclass::GetMethodName(int idxMethod) {
     String str;
@@ -140,6 +138,37 @@ ComoPyClassStub::ComoPyClassStub(AutoPtr<IInterface> thisObject_)
         throw std::runtime_error("COMO class GetAllMethods: " + className);
     }
     methods = methods_;
+}
+
+std::map<std::string, py::object> ComoPyClassStub::GetAllConstants() {
+    std::map<std::string, py::object> out;
+
+    AutoPtr<IMetaCoclass> metaCoclass;
+    IObject::Probe(thisObject)->GetCoclass(metaCoclass);
+
+    Integer interfaceNumber;
+    metaCoclass->GetInterfaceNumber(interfaceNumber);
+    Array<IMetaInterface*> interfaces(interfaceNumber);
+    metaCoclass->GetAllInterfaces(interfaces);
+    for (Integer i = 0; i < interfaces.GetLength(); i++) {
+        String name, ns;
+        int totalNumber, declaredNumber;
+        interfaces[i]->GetName(name);
+        interfaces[i]->GetNamespace(ns);
+
+        Integer constantNumber;
+        interfaces[i]->GetConstantNumber(constantNumber);
+        if (constantNumber > 0) {
+            std::map<std::string, py::object> out_;
+
+            Array<IMetaConstant*> constants(constantNumber);
+            interfaces[i]->GetAllConstants(constants);
+            out_ = constantsToMap(constants);
+
+            out.insert(out_.begin(), out_.end());
+        }
+    }
+    return out;
 }
 
 /*

@@ -61,6 +61,8 @@ PYBIND11_MODULE(como_pybind, m) {
 #undef LAMBDA_FOR_CLASS_INIT
                 }
 
+                clz_.def("getAllConstants", &ComoPyClassStub::GetAllConstants);
+
                 Array<IMetaMethod*> methods;
                 int methodNumber;
                 methodNumber = metaCoclass->GetMethodNumber();
@@ -81,12 +83,6 @@ PYBIND11_MODULE(como_pybind, m) {
             return metaComponent;
         }))
         .def("getName", &MetaComponent::GetName)
-        .def(
-            "getConstant",
-            [](MetaComponent& m) {
-                return m.GetConstant();
-            },
-            py::return_value_policy::take_ownership)
         .def(
             "getAllConstants",
             [](MetaComponent& m) {

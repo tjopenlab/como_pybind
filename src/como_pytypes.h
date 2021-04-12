@@ -18,6 +18,8 @@ public:
 #include "LAMBDA_FOR_METHOD.inc"
 #undef LAMBDA_FOR_METHOD
 
+    std::map<std::string, py::object> GetAllConstants();
+
 private:
     py::tuple methodimpl(int idxMethod, py::args args, py::kwargs kwargs);
 

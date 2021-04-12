@@ -16,8 +16,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 mc = como_pybind.como('ReflectionTestUnit.so')
 name = mc.getName();
 print ('name is: ' + name)
+print ('constants: ', mc.getAllConstants());
 
 cmt = como_pybind.CMethodTester()
 print ('load COMO class CMethodTester')
 
-cmt.TestMethod1(2021)
+print (cmt.TestMethod1(12392021))
+print (cmt.getAllConstants())

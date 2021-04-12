@@ -99,7 +99,10 @@ public:
         Array<IMetaMethod*> methods_(methodNumber);
         ECode ec = metaCoclass_->GetAllMethods(methods_);
         if (FAILED(ec)) {
-            //
+            String str;
+            metaCoclass_->GetName(str);
+            std::string className = std::string(str.string());
+            throw std::runtime_error("COMO class GetAllMethods: " + className);
         }
         methods = methods_;
     }
