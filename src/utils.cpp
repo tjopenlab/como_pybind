@@ -30,7 +30,8 @@ std::map<std::string, py::object> constantsToMap(Array<IMetaConstant*> &constant
         constants[i]->GetNamespace(ns);
         if (! ns.IsEmpty()) {
             ns = ns.Replace("::", ".");
-            ns = ns + ".";
+            if (! ns.EndsWith("."))
+                ns = ns + ".";
         }
         std::string strName((ns + name).string());
 
