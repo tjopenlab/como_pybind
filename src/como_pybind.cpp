@@ -43,7 +43,7 @@ PYBIND11_MODULE(como_pybind, m) {
                 py::class_<ComoPyClassStub> clz_ = py::class_<ComoPyClassStub>(m, className.c_str());
                 switch (i) {
 
-#define LAMBDA_FOR_METHOD(_NO_)                                                             \
+#define LAMBDA_FOR_CLASS_INIT(_NO_)                                                         \
                     case _NO_:                                                              \
                         clz_.def(py::init([]() {                                            \
                             MetaCoclass *metacc = metaComponent->como_classes[_NO_];        \
@@ -56,8 +56,8 @@ PYBIND11_MODULE(como_pybind, m) {
                         }));                                                                \
                         break;
 
-#include "LAMBDA_FOR_METHOD.inc"
-#undef LAMBDA_FOR_METHOD
+#include "LAMBDA_FOR_CLASS_INIT.inc"
+#undef LAMBDA_FOR_CLASS_INIT
                 }
 
                 Array<IMetaMethod*> methods;

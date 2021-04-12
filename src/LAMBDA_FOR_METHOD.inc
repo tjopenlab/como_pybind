@@ -1,3 +1,7 @@
+/*
+MAX methods in one COMO class
+*/
+
 /*python script:
 for i in range(255):
     print ("LAMBDA_FOR_METHOD(" + str(i) + ")")
