@@ -28,6 +28,12 @@ std::map<std::string, py::object> constantsToMap(Array<IMetaConstant*> &constant
         String name, ns;
         constants[i]->GetName(name);
         constants[i]->GetNamespace(ns);
+        if (! ns.IsEmpty()) {
+            ns = ns.Replace("::", ".");
+            ns = ns + ".";
+        }
+        std::string strName((ns + name).string());
+
         AutoPtr<IMetaType> type;
         constants[i]->GetType(type);
         AutoPtr<IMetaValue> value;
@@ -40,63 +46,63 @@ std::map<std::string, py::object> constantsToMap(Array<IMetaConstant*> &constant
                 {
                     Byte byte;
                     value->GetByteValue(byte);
-                    out.insert({std::string(name.string()), py::int_(byte)});
+                    out.insert({strName, py::int_(byte)});
                 }
                 break;
             case TypeKind::Short:
                 {
                     Short svalue;
                     value->GetShortValue(svalue);
-                    out.insert({std::string(name.string()), py::int_(svalue)});
+                    out.insert({strName, py::int_(svalue)});
                 }
                 break;
             case TypeKind::Integer:
                 {
                     Integer ivalue;
                     value->GetIntegerValue(ivalue);
-                    out.insert({std::string(name.string()), py::int_(ivalue)});
+                    out.insert({strName, py::int_(ivalue)});
                 }
                 break;
             case TypeKind::Long:
                 {
                     Long lvalue;
                     value->GetLongValue(lvalue);
-                    out.insert({std::string(name.string()), py::int_(lvalue)});
+                    out.insert({strName, py::int_(lvalue)});
                 }
                 break;
             case TypeKind::Float:
                 {
                     Float fvalue;
                     value->GetFloatValue(fvalue);
-                    out.insert({std::string(name.string()), py::float_(fvalue)});
+                    out.insert({strName, py::float_(fvalue)});
                 }
                 break;
             case TypeKind::Double:
                 {
                     Double dvalue;
                     value->GetDoubleValue(dvalue);
-                    out.insert({std::string(name.string()), py::float_(dvalue)});
+                    out.insert({strName, py::float_(dvalue)});
                 }
                 break;
             case TypeKind::Char:
                 {
                     Char cvalue;
                     value->GetCharValue(cvalue);
-                    out.insert({std::string(name.string()), py::int_(cvalue)});
+                    out.insert({strName, py::int_(cvalue)});
                 }
                 break;
             case TypeKind::Boolean:
                 {
                     Boolean b;
                     value->GetBooleanValue(b);
-                    out.insert({std::string(name.string()), py::bool_(b)});
+                    out.insert({strName, py::bool_(b)});
                 }
                 break;
             case TypeKind::String:
                 {
                     String str;
                     value->GetStringValue(str);
-                    out.insert({std::string(name.string()), py::str(str)});
+                    out.insert({strName, py::str(str)});
                 }
                 break;
             case TypeKind::HANDLE:

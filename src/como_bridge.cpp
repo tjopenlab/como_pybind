@@ -151,11 +151,6 @@ std::map<std::string, py::object> ComoPyClassStub::GetAllConstants() {
     Array<IMetaInterface*> interfaces(interfaceNumber);
     metaCoclass->GetAllInterfaces(interfaces);
     for (Integer i = 0; i < interfaces.GetLength(); i++) {
-        String name, ns;
-        int totalNumber, declaredNumber;
-        interfaces[i]->GetName(name);
-        interfaces[i]->GetNamespace(ns);
-
         Integer constantNumber;
         interfaces[i]->GetConstantNumber(constantNumber);
         if (constantNumber > 0) {
