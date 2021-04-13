@@ -28,5 +28,35 @@ pip install ./como_pybind
 #### 使用说明
 ```python
 import como_pybind
-como_pybind.add(1, 2)
+
+mc = como_pybind.como('ReflectionTestUnit.so')
+name = mc.getName();
+```
+
+
+
+#### "CentOS on AARCH64" 上应用实例
+
+- 安装ninja https://support.huaweicloud.com/prtg-kunpengdbs/kunpenggreenplum_02_0011.html
+- CentOS7-arm64安装Archiconda3 https://blog.csdn.net/frdevolcqzyxynjds/article/details/105939421
+
+```shell
+进入COMO开发环境
+$ source build/envsetup.sh
+$ como_linux_aarch64
+
+如果Anaconda有虚拟环境，激活相应的环境
+$ source ~/anaconda3/bin/activate py36
+
+$ export PYTHONPATH=$PYTHONPATH:${HOME}/como_pybind/pybind11/pybind11
+
+设置COMO构件寻找路径
+$ export LIB_PATH=$LIB_PATH:$BIN_PATH
+
+安装como_pybind
+$ cd ${HOME}/como_pybind
+$ python setup.py install
+
+运行como_pybind实验程序
+$ python tests/como_pybind_basictest.py
 ```

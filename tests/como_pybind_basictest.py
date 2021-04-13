@@ -5,7 +5,7 @@ $ source build/envsetup.sh
 $ como_linux_x64
 $ source ~/anaconda3/bin/activate py36
 
-$ export PYTHONPATH=$PYTHONPATH:/home/xilong/como/como_pybind/pybind11/pybind11
+$ export PYTHONPATH=$PYTHONPATH:${HOME}/como/como_pybind/pybind11/pybind11
 $ export LIB_PATH=$LIB_PATH:$BIN_PATH
 '''
 
