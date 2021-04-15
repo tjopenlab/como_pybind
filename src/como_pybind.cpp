@@ -40,7 +40,8 @@ PYBIND11_MODULE(como_pybind, m) {
                 MetaCoclass *metaCoclass = metaComponent->como_classes[i];
                 std::string className = std::string(metaCoclass->GetName());
 
-                py::class_<ComoPyClassStub> clz_ = py::class_<ComoPyClassStub>(m, className.c_str());
+                py::class_<ComoPyClassStub> clz_ = py::class_<ComoPyClassStub>(m, className.c_str(),
+                                                                               py::module_local());
                 switch (i) {
 
 #define LAMBDA_FOR_CLASS_INIT(_NO_)                                                                 \
