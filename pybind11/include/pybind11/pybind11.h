@@ -1035,9 +1035,12 @@ protected:
             pybind11_fail("generic_type: cannot initialize type \"" + std::string(rec.name) +
                           "\": an object with that name is already defined");
 
+        /* in como_pybind, one C++ class could be interpreted as more than one python class
+
         if (rec.module_local ? get_local_type_info(*rec.type) : get_global_type_info(*rec.type))
             pybind11_fail("generic_type: type \"" + std::string(rec.name) +
                           "\" is already registered!");
+        */
 
         m_ptr = make_new_python_type(rec);
 
