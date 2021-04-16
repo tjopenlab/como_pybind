@@ -94,7 +94,6 @@ private:
 class MetaCoclass {
 public:
     MetaCoclass(AutoPtr<IMetaCoclass> metaCoclass_) : metaCoclass(metaCoclass_) {
-        Integer methodNumber;
         metaCoclass_->GetMethodNumber(methodNumber);
         Array<IMetaMethod*> methods_(methodNumber);
         ECode ec = metaCoclass_->GetAllMethods(methods_);
@@ -112,7 +111,7 @@ public:
     std::string GetMethodName(int idxMethod);
     AutoPtr<IInterface> CreateObject();
 
-    int GetMethodNumber();
+    Integer methodNumber;
 
 private:
     AutoPtr<IMetaCoclass> metaCoclass;

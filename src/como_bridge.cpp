@@ -97,12 +97,6 @@ std::string MetaCoclass::GetNamespace() {
     return std::string(str.string());
 }
 
-int MetaCoclass::GetMethodNumber() {
-    int methodNumber;
-    metaCoclass->GetMethodNumber(methodNumber);
-    return methodNumber;
-}
-
 std::string MetaCoclass::GetMethodName(int idxMethod) {
     String str;
     methods[idxMethod]->GetName(str);
