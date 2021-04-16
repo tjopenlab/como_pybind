@@ -40,7 +40,7 @@ PYBIND11_MODULE(como_pybind, m) {
                 MetaCoclass *metaCoclass = metaComponent->como_classes[i];
                 std::string className = std::string(metaCoclass->GetName());
 
-                printf("load class, className: %s\n", className.c_str());
+                Logger::V("como_pybind", "load class, className: %s\n", className.c_str());
                 py::class_<ComoPyClassStub> clz_ = py::class_<ComoPyClassStub>(m, className.c_str(),
                                                                                py::module_local());
                 switch (i) {
@@ -68,9 +68,10 @@ PYBIND11_MODULE(como_pybind, m) {
                 Array<IMetaMethod*> methods;
                 int methodNumber;
                 methodNumber = metaCoclass->GetMethodNumber();
+                methodNumber = 0;
                 for (int j = 0;  j < methodNumber; j++) {
                     const char *str = metaCoclass->GetMethodName(j).c_str();
-                    printf ("load method, methodName: %s\n", str);
+                    Logger::V("como_pybind", "load method, methodName: %s\n", str);
                     switch (j) {
 
 #define LAMBDA_FOR_METHOD(_NO_)                                         \
