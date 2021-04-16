@@ -68,7 +68,6 @@ PYBIND11_MODULE(como_pybind, m) {
                 Array<IMetaMethod*> methods;
                 int methodNumber;
                 methodNumber = metaCoclass->GetMethodNumber();
-                methodNumber = 0;
                 for (int j = 0;  j < methodNumber; j++) {
                     const char *str = metaCoclass->GetMethodName(j).c_str();
                     Logger::V("como_pybind", "load method, methodName: %s\n", str);
