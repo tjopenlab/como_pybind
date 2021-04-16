@@ -97,10 +97,10 @@ std::string MetaCoclass::GetNamespace() {
     return std::string(str.string());
 }
 
-std::string MetaCoclass::GetMethodName(int idxMethod) {
+char *MetaCoclass::GetMethodName(int idxMethod) {
     String str;
     methods[idxMethod]->GetName(str);
-    return std::string(str.string());
+    return strdup(str.string());
 }
 
 AutoPtr<IInterface> MetaCoclass::CreateObject() {

@@ -108,7 +108,7 @@ public:
 
     std::string GetName();
     std::string GetNamespace();
-    std::string GetMethodName(int idxMethod);
+    char *GetMethodName(int idxMethod);
     AutoPtr<IInterface> CreateObject();
 
     Integer methodNumber;

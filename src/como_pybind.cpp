@@ -66,10 +66,8 @@ PYBIND11_MODULE(como_pybind, m) {
                 clz_.def("getAllConstants", &ComoPyClassStub::GetAllConstants);
 
                 Array<IMetaMethod*> methods;
-                int methodNumber;
-                methodNumber = metaCoclass->GetMethodNumber();
-                for (int j = 0;  j < methodNumber; j++) {
-                    const char *str = metaCoclass->GetMethodName(j).c_str();
+                for (int j = 0;  j < metaCoclass->methodNumber; j++) {
+                    char *str = metaCoclass->GetMethodName(j);
                     Logger::V("como_pybind", "load method, methodName: %s\n", str);
                     switch (j) {
 
@@ -81,6 +79,7 @@ PYBIND11_MODULE(como_pybind, m) {
 #include "LAMBDA_FOR_METHOD.inc"
 #undef LAMBDA_FOR_METHOD
                     }
+                    free(str);
                 }
             }
             return metaComponent;
