@@ -162,6 +162,7 @@ std::map<std::string, py::object> ComoPyClassStub::GetAllConstants() {
 
 /*
 The class py::args derives from py::tuple and py::kwargs derives from py::dict.
+Python types available wrappers https://pybind11.readthedocs.io/en/stable/advanced/pycpp/object.html
 */
 py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs kwargs) {
     ECode ec = 0;
@@ -261,11 +262,16 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                     else
                         argList->SetInputArgumentOfString(i, String(std::string(py::str(args[inParam++])).c_str()));
                     break;
+                case TypeKind::Interface:
+                    {
+                        ComoPyClassStub* argObj = args[inParam++].cast<ComoPyClassStub*>();
+                        argList->SetInputArgumentOfInterface(i, argObj->thisObject);
+                    }
+                    break;
                 case TypeKind::HANDLE:
                 case TypeKind::CoclassID:
                 case TypeKind::ComponentID:
                 case TypeKind::InterfaceID:
-                case TypeKind::Interface:
                 case TypeKind::Unknown:
                     inParam++;
                     break;
@@ -307,13 +313,16 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                     break;
                 case TypeKind::String:
                     outResult[i] = reinterpret_cast<HANDLE>(malloc(sizeof(String)));
-                    argList->SetOutputArgumentOfInteger(i, outResult[i]);
+                    argList->SetOutputArgumentOfString(i, outResult[i]);
+                    break;
+                case TypeKind::Interface:
+                    outResult[i] = reinterpret_cast<HANDLE>(malloc(sizeof(IInterface*)));
+                    argList->SetOutputArgumentOfInterface(i, outResult[i]);
                     break;
                 case TypeKind::HANDLE:
                 case TypeKind::CoclassID:
                 case TypeKind::ComponentID:
                 case TypeKind::InterfaceID:
-                case TypeKind::Interface:
                 case TypeKind::Unknown:
                     break;
             }
@@ -375,11 +384,16 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                         out_tuple = py::make_tuple(out_tuple, std::string((*reinterpret_cast<String*>(outResult[i])).string()));
                         free(reinterpret_cast<void*>(outResult[i]));
                         break;
+                    case TypeKind::Interface:
+                        {
+                            out_tuple = py::make_tuple(out_tuple, py::cast(*reinterpret_cast<ComoPyClassStub*>(outResult[i])));
+                            free(reinterpret_cast<void*>(outResult[i]));
+                            break;
+                        }
                     case TypeKind::HANDLE:
                     case TypeKind::CoclassID:
                     case TypeKind::ComponentID:
                     case TypeKind::InterfaceID:
-                    case TypeKind::Interface:
                     case TypeKind::Unknown:
                         break;
                 }
