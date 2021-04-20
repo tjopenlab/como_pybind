@@ -180,6 +180,9 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
         outResult = (HANDLE*)calloc(sizeof(HANDLE), paramNumber);
     }
 
+    std::vector<std::string> signatureBreak;
+    String signature;
+
     method->CreateArgumentList(argList);
     Array<IMetaParameter*> params(paramNumber);
     method->GetAllParameters(params);
@@ -262,12 +265,11 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                     else
                         argList->SetInputArgumentOfString(i, String(std::string(py::str(args[inParam++])).c_str()));
                     break;
-                case TypeKind::Interface:
-                    {
-                        ComoPyClassStub* argObj = args[inParam++].cast<ComoPyClassStub*>();
-                        argList->SetInputArgumentOfInterface(i, argObj->thisObject);
-                    }
+                case TypeKind::Interface: {
+                    ComoPyClassStub* argObj = args[inParam++].cast<ComoPyClassStub*>();
+                    argList->SetInputArgumentOfInterface(i, argObj->thisObject);
                     break;
+                }
                 case TypeKind::HANDLE:
                 case TypeKind::CoclassID:
                 case TypeKind::ComponentID:
@@ -315,10 +317,28 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                     outResult[i] = reinterpret_cast<HANDLE>(malloc(sizeof(String)));
                     argList->SetOutputArgumentOfString(i, outResult[i]);
                     break;
-                case TypeKind::Interface:
+                case TypeKind::Interface: {
+                    AutoPtr<IMetaCoclass> mCoclass_;
+                    String name, ns;
+                    std::map<std::string, py::class_<ComoPyClassStub>>::iterator iter;
+
+                    if (signatureBreak.empty()) {
+                        method->GetSignature(signature);
+                        breakSignature(signature, signatureBreak);
+                    }
+
+                    iter = g_como_classes.find(signatureBreak[i]);
+                    if (iter != g_como_classes.end()) {
+                        outResult[i] = reinterpret_cast<HANDLE>(malloc(sizeof(IInterface*)));
+                        argList->SetOutputArgumentOfInterface(i, outResult[i]);
+                    }
+                    else {
+                        throw std::runtime_error("no COMO class: " + name);
+                    }
                     outResult[i] = reinterpret_cast<HANDLE>(malloc(sizeof(IInterface*)));
                     argList->SetOutputArgumentOfInterface(i, outResult[i]);
                     break;
+                }
                 case TypeKind::HANDLE:
                 case TypeKind::CoclassID:
                 case TypeKind::ComponentID:
@@ -384,28 +404,27 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                         out_tuple = py::make_tuple(out_tuple, std::string((*reinterpret_cast<String*>(outResult[i])).string()));
                         free(reinterpret_cast<void*>(outResult[i]));
                         break;
-                    case TypeKind::Interface:
-                        {
-                            AutoPtr<IMetaCoclass> mCoclass_;
-                            String name, ns;
-                            std::map<std::string, py::class_<ComoPyClassStub>>::iterator iter;
+                    case TypeKind::Interface: {
+                        AutoPtr<IMetaCoclass> mCoclass_;
+                        String name, ns;
+                        std::map<std::string, py::class_<ComoPyClassStub>>::iterator iter;
 
-                            AutoPtr<IInterface> thisObject_ = reinterpret_cast<IInterface*>(outResult[i]);
-                            IObject::Probe(thisObject_)->GetCoclass(mCoclass_);
-                            mCoclass_->GetName(name);
-                            mCoclass_->GetNamespace(ns);
-                            iter = g_como_classes.find((ns + "." + name).string());
-                            if (iter != g_como_classes.end()) {
-                                py::class_<ComoPyClassStub> py_cls = iter->second;
-                                py::object py_obj = py_cls();
-                                out_tuple = py::make_tuple(out_tuple, py_obj);
-                            }
-                            else {
-                                out_tuple = py::make_tuple(out_tuple, py::none());
-                            }
-                            free(reinterpret_cast<void*>(outResult[i]));
-                            break;
+                        AutoPtr<IInterface> thisObject_ = reinterpret_cast<IInterface*>(outResult[i]);
+                        IObject::Probe(thisObject_)->GetCoclass(mCoclass_);
+                        mCoclass_->GetName(name);
+                        mCoclass_->GetNamespace(ns);
+                        iter = g_como_classes.find((ns + "." + name).string());
+                        if (iter != g_como_classes.end()) {
+                            py::class_<ComoPyClassStub> py_cls = iter->second;
+                            py::object py_obj = py_cls();
+                            out_tuple = py::make_tuple(out_tuple, py_obj);
                         }
+                        else {
+                            out_tuple = py::make_tuple(out_tuple, py::none());
+                        }
+                        free(reinterpret_cast<void*>(outResult[i]));
+                        break;
+                    }
                     case TypeKind::HANDLE:
                     case TypeKind::CoclassID:
                     case TypeKind::ComponentID:
