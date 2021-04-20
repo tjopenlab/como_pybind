@@ -386,7 +386,23 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                         break;
                     case TypeKind::Interface:
                         {
-                            out_tuple = py::make_tuple(out_tuple, py::cast(*reinterpret_cast<ComoPyClassStub*>(outResult[i])));
+                            AutoPtr<IMetaCoclass> mCoclass_;
+                            String name, ns;
+                            std::map<std::string, py::class_<ComoPyClassStub>>::iterator iter;
+
+                            AutoPtr<IInterface> thisObject_ = reinterpret_cast<IInterface*>(outResult[i]);
+                            IObject::Probe(thisObject_)->GetCoclass(mCoclass_);
+                            mCoclass_->GetName(name);
+                            mCoclass_->GetNamespace(ns);
+                            iter = g_como_classes.find((ns + "." + name).string());
+                            if (iter != g_como_classes.end()) {
+                                py::class_<ComoPyClassStub> py_cls = iter->second;
+                                py::object py_obj = py_cls();
+                                out_tuple = py::make_tuple(out_tuple, py_obj);
+                            }
+                            else {
+                                out_tuple = py::make_tuple(out_tuple, py::none());
+                            }
                             free(reinterpret_cast<void*>(outResult[i]));
                             break;
                         }

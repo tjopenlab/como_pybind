@@ -26,6 +26,7 @@ class MetaType;
 class MetaValue;
 class MetaCoclass;
 
+extern std::map<std::string, py::class_<ComoPyClassStub>> g_como_classes;
 
 // MetaComponent
 ///////////////////////////////

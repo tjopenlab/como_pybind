@@ -27,6 +27,7 @@ using namespace como;
 
 static py::module_ *this_pymodule = nullptr;
 static MetaComponent *metaComponent = nullptr;
+std::map<std::string, py::class_<ComoPyClassStub>> g_como_classes;
 
 PYBIND11_MODULE(como_pybind, m) {
     this_pymodule = &m;
@@ -38,11 +39,15 @@ PYBIND11_MODULE(como_pybind, m) {
 
             for(int i = 0;  i < metaComponent->como_classes.size();  i++) {
                 MetaCoclass *metaCoclass = metaComponent->como_classes[i];
-                std::string className = std::string(metaCoclass->GetName());
+                std::string className = metaCoclass->GetName();
+                std::string classNs = metaCoclass->GetNamespace();
 
                 Logger::V("como_pybind", "load class, className: %s\n", className.c_str());
                 py::class_<ComoPyClassStub> clz_ = py::class_<ComoPyClassStub>(m, className.c_str(),
                                                                                py::module_local());
+                g_como_classes.insert(std::pair<std::string, py::class_<ComoPyClassStub>>(
+                                                                    classNs + "." + className, clz_));
+
                 switch (i) {
 
 #define LAMBDA_FOR_CLASS_INIT(_NO_)                                                                 \
