@@ -441,5 +441,10 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
         out_tuple = py::make_tuple(ec);
     }
 
+    if (! signatureBreak.empty()) {
+        signatureBreak.clear();
+        signatureBreak.shrink_to_fit();
+    }
+
     return out_tuple;
 }
