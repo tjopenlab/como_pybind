@@ -143,10 +143,26 @@ std::map<std::string, py::object> constantsToMap(Array<IMetaConstant*> &constant
     | Enum        | Lxx/xx;   |
     | Interface   | Lxx/xx;   |
 *********/
+int getOneType(const char *str, char *buf);
 void breakSignature(String &signature, std::vector<std::string> &signatureVector) {
     const char *str = signature.string();
     char c = *str;
+    char buf[256];
+
     while (c != '\0') {
+        int len = getOneType(str, buf);
+        if (len == 0)
+            break;
+        std::string str_ = std::string(buf);
+        signatureVector.push_back(str_);
+        str += len;
+        c = *str;
+    }
+}
+
+int getOneType(const char *str, char *buf) {
+    char c = *str;
+    if (c != '\0') {
         switch (c) {
             case 'B':   // Byte        B
             case 'S':   // Short       S
@@ -162,44 +178,53 @@ void breakSignature(String &signature, std::vector<std::string> &signatureVector
             case 'K':   // CoclassID   |     K
             case 'M':   // ComponentID |     M
             case 'U': { // InterfaceID |     U
-                    char buf[8];
-                    buf[0] = c;
+                buf[0] = c;
+                buf[1] = '\0';
+                str++;
+                break;
+            }
+            case '[': { // Array       [
+                buf[0] = c;
+                str++;
+                int len = getOneType(str, buf + 1);
+                if (len == 0)
                     buf[1] = '\0';
-                    str++;
-                    signatureVector.push_back(std::string(buf));
-                    break;
+                break;
             }
             case 'R':   // Triple      R
-            case '[':   // Array       [
             case 'P':   // Pointer     *
             case '&': { // Reference   &
-                    char buf[8];
-                    buf[0] = c;
-                    str++;
-                    buf[1] = *str;
-                    buf[2] = '\0';
-                    str++;
-                    signatureVector.push_back(std::string(buf));
-                    break;
+                buf[0] = c;
+                str++;
+                buf[1] = *str;
+                buf[2] = '\0';
+                str++;
+                break;
             }
             case 'L': { // Interface   | Lxx/xx;
                         // Enum    Lxx/xx;
-                    char buf[256];
-                    int i = 0;
-                    do {
-                        buf[i++] = c;
-                        str++;
-                        c = *str;
-                    } while ((c != ';') && (c != '\0') && (i < 256));
-                    if (c == ';')
-                        str++;
+                int i = 0;
+                str++;
+                c = *str;
+                while ((c != ';') && (c != '\0') && (i < 256)) {
+                    buf[i++] = c;
+                    str++;
+                    c = *str;
+                }
+                if (c == ';')
+                    str++;
 
-                    signatureVector.push_back(std::string(buf));
-                    break;
+                break;
             }
             default:
                 assert(false);
+                buf[0] = '\0';
+                return 0;
         }
         c = *str;
     }
+    else
+        return 0;
+
+    return strlen(buf);
 }
