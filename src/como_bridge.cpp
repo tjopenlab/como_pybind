@@ -117,6 +117,19 @@ void MetaCoclass::GetMethodName(int idxMethod, char *buf) {
     if (moreMethod) {
         String signature;
         methods[idxMethod]->GetSignature(signature);
+
+        /* Replace all special signature character
+            | Array       |     [     |
+            | Pointer     |     *     |
+            | Reference   |     &     |
+            | Enum        | Lxx/xx;   |
+            | Interface   | Lxx/xx;   |
+        */
+        signature = signature.Replace("[", "_0_")
+                             .Replace("*", "_1_")
+                             .Replace("&", "_2_")
+                             .Replace("/", "_3_");
+
         strncpy(buf, (str+"__"+signature).string(), MAX_METHOD_NAME_LENGTH-1);
         return;
     }
