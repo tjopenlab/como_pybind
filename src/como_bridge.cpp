@@ -97,10 +97,30 @@ std::string MetaCoclass::GetNamespace() {
     return std::string(str.string());
 }
 
-char *MetaCoclass::GetMethodName(int idxMethod) {
+void MetaCoclass::GetMethodName(int idxMethod, char *buf) {
     String str;
     methods[idxMethod]->GetName(str);
-    return strdup(str.string());
+
+    bool moreMethod = false;
+    String str_;
+    for (int i = 0;  i < methodNumber;  i++) {
+        if (i != idxMethod) {
+            methods[i]->GetName(str_);
+            if (str.Equals(str_)) {
+                moreMethod = true;
+                break;
+            }
+        }
+    }
+
+    buf[MAX_METHOD_NAME_LENGTH-1] = '\0';
+    if (moreMethod) {
+        String signature;
+        methods[idxMethod]->GetSignature(signature);
+        strncpy(buf, (str+"__"+signature).string(), MAX_METHOD_NAME_LENGTH-1);
+        return;
+    }
+    strncpy(buf, str.string(), MAX_METHOD_NAME_LENGTH-1);
 }
 
 AutoPtr<IInterface> MetaCoclass::CreateObject() {

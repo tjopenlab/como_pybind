@@ -26,6 +26,7 @@ class MetaType;
 class MetaValue;
 class MetaCoclass;
 
+#define MAX_METHOD_NAME_LENGTH 1024
 extern std::map<std::string, py::class_<ComoPyClassStub>> g_como_classes;
 
 // MetaComponent
@@ -109,7 +110,7 @@ public:
 
     std::string GetName();
     std::string GetNamespace();
-    char *GetMethodName(int idxMethod);
+    void GetMethodName(int idxMethod, char *buf);
     AutoPtr<IInterface> CreateObject();
 
     Integer methodNumber;
