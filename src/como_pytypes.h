@@ -23,9 +23,9 @@ public:
     void setThisObject(AutoPtr<IInterface> thisObject_);
 
     AutoPtr<IInterface> thisObject;
+    std::string className;
 
 private:
-    std::string className;
     Array<IMetaMethod*> methods;
 };
 

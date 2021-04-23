@@ -70,9 +70,10 @@ std::string MetaConstant::GetName() {
 }
 
 std::string MetaConstant::GetNamespace() {
-    String str;
-    constant->GetNamespace(str);
-    return std::string(str.string());
+    String ns;
+    constant->GetNamespace(ns);
+    ns = ns.Replace("::", ".");
+    return std::string(ns.string());
 }
 
 MetaType *MetaConstant::GetType() {
@@ -92,9 +93,10 @@ std::string MetaCoclass::GetName() {
 }
 
 std::string MetaCoclass::GetNamespace() {
-    String str;
-    metaCoclass->GetNamespace(str);
-    return std::string(str.string());
+    String ns;
+    metaCoclass->GetNamespace(ns);
+    ns = ns.Replace("::", ".");
+    return std::string(ns.string());
 }
 
 void MetaCoclass::GetMethodName(int idxMethod, char *buf) {
@@ -149,8 +151,13 @@ AutoPtr<IInterface> MetaCoclass::constructObj(ComoPyClassStub* stub, py::args ar
 {
     const char *signature = std::string(py::str(args[0])).c_str();
     AutoPtr<IMetaConstructor> constr;
+
     ECode ec = metaCoclass->GetConstructor(signature, constr);
-    if (FAILED(ec)) {
+    if (constr == nullptr) {
+        std::string className = GetName();
+        std::string classNs = GetNamespace();
+
+        throw std::runtime_error("Can't construct object for " + classNs + "." + className + " with signature " + signature);
         stub->thisObject = nullptr;
         return nullptr;
     }
