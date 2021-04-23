@@ -123,13 +123,13 @@ public:
     std::string GetNamespace();
     void GetMethodName(int idxMethod, char *buf);
     AutoPtr<IInterface> CreateObject();
-    AutoPtr<IInterface> constructObj(ComoPyClassStub* stub, py::args args, py::kwargs kwargs);
+    void constructObj(ComoPyClassStub* stub, py::args args, py::kwargs kwargs);
 
     Integer methodNumber;
     Integer constrsNumber;
+    AutoPtr<IMetaCoclass> metaCoclass;
 
 private:
-    AutoPtr<IMetaCoclass> metaCoclass;
     Array<IMetaMethod*> methods;
     Array<IMetaConstructor*> constrs;
 

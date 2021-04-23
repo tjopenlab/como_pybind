@@ -8,7 +8,8 @@ namespace py = pybind11;
 
 class ComoPyClassStub {
 public:
-    ComoPyClassStub(AutoPtr<IInterface> thisObject_);
+    ComoPyClassStub(AutoPtr<IMetaCoclass> mCoclass);
+    ComoPyClassStub(AutoPtr<IMetaCoclass> mCoclass, AutoPtr<IInterface> thisObject_);
 
 #define LAMBDA_FOR_METHOD(_NO_)                                 \
     py::tuple m##_NO_(py::args args, py::kwargs kwargs) {       \
@@ -20,7 +21,7 @@ public:
 
     std::map<std::string, py::object> GetAllConstants();
     py::tuple methodimpl(IMetaMethod *method, py::args args, py::kwargs kwargs, bool isConstructor);
-    void setThisObject(AutoPtr<IInterface> thisObject_);
+    void refreshThisObject(AutoPtr<IMetaCoclass> mCoclass);
 
     AutoPtr<IInterface> thisObject;
     std::string className;

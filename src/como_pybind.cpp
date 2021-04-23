@@ -53,18 +53,18 @@ PYBIND11_MODULE(como_pybind, m) {
 #define LAMBDA_FOR_CLASS_INIT(_NO_)                                                                     \
                     case _NO_:                                                                          \
                         clz_.def(py::init([](py::args args, py::kwargs kwargs) {                        \
+                            MetaCoclass *metacc = metaComponent->como_classes[_NO_];                    \
                             if (args.size() == 0) {                                                     \
-                                MetaCoclass *metacc = metaComponent->como_classes[_NO_];                \
                                 AutoPtr<IInterface> thisObject = metacc->CreateObject();                \
                                 if (thisObject == nullptr) {                                            \
                                     std::string className = std::string(metacc->GetName());             \
                                     throw std::runtime_error("initialize COMO class: " + className);    \
                                 }                                                                       \
-                                ComoPyClassStub* stub = new ComoPyClassStub(thisObject);                \
+                                ComoPyClassStub* stub = new ComoPyClassStub(metacc->metaCoclass,        \
+                                                                                    thisObject);        \
                                 return stub;                                                            \
                             } else {                                                                    \
-                                MetaCoclass *metacc = metaComponent->como_classes[_NO_];                \
-                                ComoPyClassStub* stub = new ComoPyClassStub(nullptr);                   \
+                                ComoPyClassStub* stub = new ComoPyClassStub(metacc->metaCoclass);       \
                                 metacc->constructObj(stub, args, kwargs);                               \
                                 if (stub->thisObject == nullptr) {                                      \
                                     std::string className = std::string(metacc->GetName());             \

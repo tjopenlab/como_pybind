@@ -147,7 +147,7 @@ AutoPtr<IInterface> MetaCoclass::CreateObject() {
     return object;
 }
 
-AutoPtr<IInterface> MetaCoclass::constructObj(ComoPyClassStub* stub, py::args args, py::kwargs kwargs)
+void MetaCoclass::constructObj(ComoPyClassStub* stub, py::args args, py::kwargs kwargs)
 {
     const char *signature = std::string(py::str(args[0])).c_str();
     AutoPtr<IMetaConstructor> constr;
@@ -159,7 +159,7 @@ AutoPtr<IInterface> MetaCoclass::constructObj(ComoPyClassStub* stub, py::args ar
 
         throw std::runtime_error("Can't construct object for " + classNs + "." + className + " with signature " + signature);
         stub->thisObject = nullptr;
-        return nullptr;
+        return;
     }
     stub->methodimpl(constr, args, kwargs, true);
 }
@@ -167,27 +167,27 @@ AutoPtr<IInterface> MetaCoclass::constructObj(ComoPyClassStub* stub, py::args ar
 // ComoPyClassStub
 ///////////////////////////////
 
-ComoPyClassStub::ComoPyClassStub(AutoPtr<IInterface> thisObject_)
+ComoPyClassStub::ComoPyClassStub(AutoPtr<IMetaCoclass> mCoclass)
+    : thisObject(nullptr)
 {
-    setThisObject(thisObject_);
+    refreshThisObject(mCoclass);
 }
 
-void ComoPyClassStub::setThisObject(AutoPtr<IInterface> thisObject_)
+ComoPyClassStub::ComoPyClassStub(AutoPtr<IMetaCoclass> mCoclass, AutoPtr<IInterface> thisObject_)
+    : thisObject(thisObject_)
 {
-    if (thisObject_ == nullptr)
-        return;
+    refreshThisObject(mCoclass);
+}
 
-    thisObject = thisObject_;
-
-    AutoPtr<IMetaCoclass> mCoclass_;
-    IObject::Probe(thisObject_)->GetCoclass(mCoclass_);
+void ComoPyClassStub::refreshThisObject(AutoPtr<IMetaCoclass> mCoclass)
+{
     Integer methodNumber;
-    mCoclass_->GetMethodNumber(methodNumber);
+    mCoclass->GetMethodNumber(methodNumber);
     Array<IMetaMethod*> methods_(methodNumber);
-    ECode ec = mCoclass_->GetAllMethods(methods_);
+    ECode ec = mCoclass->GetAllMethods(methods_);
     if (FAILED(ec)) {
         String str;
-        mCoclass_->GetName(str);
+        mCoclass->GetName(str);
         std::string className = std::string(str.string());
         throw std::runtime_error("COMO class GetAllMethods: " + className);
     }
