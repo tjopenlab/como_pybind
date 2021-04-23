@@ -106,18 +106,34 @@ public:
             throw std::runtime_error("COMO class GetAllMethods: " + className);
         }
         methods = methods_;
+
+        metaCoclass_->GetConstructorNumber(constrsNumber);
+        Array<IMetaConstructor*> constrs_(methodNumber);
+        ec = metaCoclass_->GetAllConstructors(constrs_);
+        if (FAILED(ec)) {
+            String str;
+            metaCoclass_->GetName(str);
+            std::string className = std::string(str.string());
+            throw std::runtime_error("COMO class GetAllConstructors: " + className);
+        }
+        constrs = constrs_;
     }
 
     std::string GetName();
     std::string GetNamespace();
     void GetMethodName(int idxMethod, char *buf);
     AutoPtr<IInterface> CreateObject();
+    AutoPtr<IInterface> constructObj(ComoPyClassStub* stub, py::args args, py::kwargs kwargs);
 
     Integer methodNumber;
+    Integer constrsNumber;
 
 private:
     AutoPtr<IMetaCoclass> metaCoclass;
     Array<IMetaMethod*> methods;
+    Array<IMetaConstructor*> constrs;
+
+
 };
 
 #endif

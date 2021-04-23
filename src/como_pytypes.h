@@ -10,22 +10,23 @@ class ComoPyClassStub {
 public:
     ComoPyClassStub(AutoPtr<IInterface> thisObject_);
 
-#define LAMBDA_FOR_METHOD(_NO_)                             \
-    py::tuple m##_NO_(py::args args, py::kwargs kwargs) {   \
-        return methodimpl(_NO_, args, kwargs);              \
+#define LAMBDA_FOR_METHOD(_NO_)                                 \
+    py::tuple m##_NO_(py::args args, py::kwargs kwargs) {       \
+        return methodimpl(methods[_NO_], args, kwargs, false);  \
     }
 
 #include "LAMBDA_FOR_METHOD.inc"
 #undef LAMBDA_FOR_METHOD
 
     std::map<std::string, py::object> GetAllConstants();
+    py::tuple methodimpl(IMetaMethod *method, py::args args, py::kwargs kwargs, bool isConstructor);
+    void setThisObject(AutoPtr<IInterface> thisObject_);
+
+    AutoPtr<IInterface> thisObject;
 
 private:
-    py::tuple methodimpl(int idxMethod, py::args args, py::kwargs kwargs);
-
     std::string className;
     Array<IMetaMethod*> methods;
-    AutoPtr<IInterface> thisObject;
 };
 
 #endif

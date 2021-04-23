@@ -145,13 +145,33 @@ AutoPtr<IInterface> MetaCoclass::CreateObject() {
     return object;
 }
 
+AutoPtr<IInterface> MetaCoclass::constructObj(ComoPyClassStub* stub, py::args args, py::kwargs kwargs)
+{
+    const char *signature = std::string(py::str(args[0])).c_str();
+    AutoPtr<IMetaConstructor> constr;
+    ECode ec = metaCoclass->GetConstructor(signature, constr);
+    if (FAILED(ec)) {
+        stub->thisObject = nullptr;
+        return nullptr;
+    }
+    stub->methodimpl(constr, args, kwargs, true);
+}
 
 // ComoPyClassStub
 ///////////////////////////////
 
 ComoPyClassStub::ComoPyClassStub(AutoPtr<IInterface> thisObject_)
-        : thisObject(thisObject_)
 {
+    setThisObject(thisObject_);
+}
+
+void ComoPyClassStub::setThisObject(AutoPtr<IInterface> thisObject_)
+{
+    if (thisObject_ == nullptr)
+        return;
+
+    thisObject = thisObject_;
+
     AutoPtr<IMetaCoclass> mCoclass_;
     IObject::Probe(thisObject_)->GetCoclass(mCoclass_);
     Integer methodNumber;
@@ -197,10 +217,9 @@ std::map<std::string, py::object> ComoPyClassStub::GetAllConstants() {
 The class py::args derives from py::tuple and py::kwargs derives from py::dict.
 Python types available wrappers https://pybind11.readthedocs.io/en/stable/advanced/pycpp/object.html
 */
-py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs kwargs) {
+py::tuple ComoPyClassStub::methodimpl(IMetaMethod *method, py::args args, py::kwargs kwargs, bool isConstructor) {
     ECode ec = 0;
     AutoPtr<IArgumentList> argList;
-    IMetaMethod *method = methods[idxMethod];
     Boolean outArgs;
     Integer paramNumber;
     method->HasOutArguments(outArgs);
@@ -219,7 +238,13 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
     method->CreateArgumentList(argList);
     Array<IMetaParameter*> params(paramNumber);
     method->GetAllParameters(params);
-    Integer inParam = 0;
+
+    Integer inParam;
+    if (isConstructor)
+        inParam = 1;
+    else
+        inParam = 0;
+
     for (Integer i = 0; i < paramNumber; i++) {
         IMetaParameter* param = params[i];
 
@@ -380,6 +405,11 @@ py::tuple ComoPyClassStub::methodimpl(int idxMethod, py::args args, py::kwargs k
                     break;
             }
         }
+    }
+
+    if (isConstructor) {
+        ec = (reinterpret_cast<IMetaConstructor*>(method))->CreateObject(argList, thisObject);
+        return py::make_tuple();
     }
 
     if (ec == 0) {
