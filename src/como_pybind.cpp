@@ -71,7 +71,7 @@ PYBIND11_MODULE(como_pybind, m) {
                 clz_.def("getAllConstants", &ComoPyClassStub::GetAllConstants);
 
                 Array<IMetaMethod*> methods;
-                char buf[1024];
+                char buf[MAX_METHOD_NAME_LENGTH];
                 for (int j = 0;  j < metaCoclass->methodNumber; j++) {
                     metaCoclass->GetMethodName(j, buf);
                     Logger::V("como_pybind", "load method, methodName: %s\n", buf);
