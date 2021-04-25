@@ -17,10 +17,6 @@
 #include <comoapi.h>
 #include "utils.h"
 
-/*
-???    GetRadix(
-        [out] Integer& radix);
-*/
 std::map<std::string, py::object> constantsToMap(Array<IMetaConstant*> &constants) {
     std::map<std::string, py::object> out;
 
