@@ -166,33 +166,16 @@ void MetaCoclass::constructObj(ComoPyClassStub* stub, py::args args, py::kwargs 
 
 // ComoPyClassStub
 ///////////////////////////////
+ComoPyClassStub::ComoPyClassStub(MetaCoclass *mCoclass)
+    : thisObject(nullptr),
+    methods(mCoclass->methods)
+{}
 
-ComoPyClassStub::ComoPyClassStub(AutoPtr<IMetaCoclass> mCoclass)
-    : thisObject(nullptr)
-{
-    refreshThisObject(mCoclass);
-}
+ComoPyClassStub::ComoPyClassStub(MetaCoclass *mCoclass, AutoPtr<IInterface> thisObject_)
+    : thisObject(thisObject_),
+    methods(mCoclass->methods)
+{}
 
-ComoPyClassStub::ComoPyClassStub(AutoPtr<IMetaCoclass> mCoclass, AutoPtr<IInterface> thisObject_)
-    : thisObject(thisObject_)
-{
-    refreshThisObject(mCoclass);
-}
-
-void ComoPyClassStub::refreshThisObject(AutoPtr<IMetaCoclass> mCoclass)
-{
-    Integer methodNumber;
-    mCoclass->GetMethodNumber(methodNumber);
-    Array<IMetaMethod*> methods_(methodNumber);
-    ECode ec = mCoclass->GetAllMethods(methods_);
-    if (FAILED(ec)) {
-        String str;
-        mCoclass->GetName(str);
-        std::string className = std::string(str.string());
-        throw std::runtime_error("COMO class GetAllMethods: " + className);
-    }
-    methods = methods_;
-}
 
 std::map<std::string, py::object> ComoPyClassStub::GetAllConstants() {
     std::map<std::string, py::object> out;

@@ -128,12 +128,10 @@ public:
     Integer methodNumber;
     Integer constrsNumber;
     AutoPtr<IMetaCoclass> metaCoclass;
+    Array<IMetaMethod*> methods;
 
 private:
-    Array<IMetaMethod*> methods;
     Array<IMetaConstructor*> constrs;
-
-
 };
 
 #endif

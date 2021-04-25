@@ -6,10 +6,12 @@
 
 namespace py = pybind11;
 
+class MetaCoclass;
+
 class ComoPyClassStub {
 public:
-    ComoPyClassStub(AutoPtr<IMetaCoclass> mCoclass);
-    ComoPyClassStub(AutoPtr<IMetaCoclass> mCoclass, AutoPtr<IInterface> thisObject_);
+    ComoPyClassStub(MetaCoclass *mCoclass);
+    ComoPyClassStub(MetaCoclass *mCoclass, AutoPtr<IInterface> thisObject_);
 
 #define LAMBDA_FOR_METHOD(_NO_)                                 \
     py::tuple m##_NO_(py::args args, py::kwargs kwargs) {       \

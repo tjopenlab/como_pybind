@@ -60,11 +60,10 @@ PYBIND11_MODULE(como_pybind, m) {
                                     std::string className = std::string(metacc->GetName());             \
                                     throw std::runtime_error("initialize COMO class: " + className);    \
                                 }                                                                       \
-                                ComoPyClassStub* stub = new ComoPyClassStub(metacc->metaCoclass,        \
-                                                                                    thisObject);        \
+                                ComoPyClassStub* stub = new ComoPyClassStub(metacc, thisObject);        \
                                 return stub;                                                            \
                             } else {                                                                    \
-                                ComoPyClassStub* stub = new ComoPyClassStub(metacc->metaCoclass);       \
+                                ComoPyClassStub* stub = new ComoPyClassStub(metacc);                    \
                                 metacc->constructObj(stub, args, kwargs);                               \
                                 if (stub->thisObject == nullptr) {                                      \
                                     std::string className = std::string(metacc->GetName());             \
