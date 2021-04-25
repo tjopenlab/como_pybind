@@ -206,6 +206,13 @@ std::map<std::string, py::object> ComoPyClassStub::GetAllConstants() {
 /*
 The class py::args derives from py::tuple and py::kwargs derives from py::dict.
 Python types available wrappers https://pybind11.readthedocs.io/en/stable/advanced/pycpp/object.html
+
+py::args args[] operator
+    // https://docs.python.org/3/c-api/tuple.html
+    PyObject* PyTuple_GetItem(PyObject *p, Py_ssize_t pos)
+    Return value: Borrowed reference.
+    Return the object at position pos in the tuple pointed to by p. If pos is out of bounds, return
+    NULL and set an IndexError exception.
 */
 py::tuple ComoPyClassStub::methodimpl(IMetaMethod *method, py::args args, py::kwargs kwargs, bool isConstructor) {
     ECode ec = 0;
