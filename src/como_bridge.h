@@ -107,6 +107,16 @@ public:
         }
         methods = methods_;
 
+        Array<Boolean> overridesInfo_(methodNumber);
+        ec = metaCoclass_->GetAllMethodsOverrideInfo(overridesInfo_);
+        if (FAILED(ec)) {
+            String str;
+            metaCoclass_->GetName(str);
+            std::string className = std::string(str.string());
+            throw std::runtime_error("COMO class GetAllMethodsOverrideInfo: " + className);
+        }
+        overridesInfo = overridesInfo_;
+
         metaCoclass_->GetConstructorNumber(constrsNumber);
         Array<IMetaConstructor*> constrs_(methodNumber);
         ec = metaCoclass_->GetAllConstructors(constrs_);
@@ -132,6 +142,7 @@ public:
 
 private:
     Array<IMetaConstructor*> constrs;
+    Array<Boolean> overridesInfo;
 };
 
 #endif

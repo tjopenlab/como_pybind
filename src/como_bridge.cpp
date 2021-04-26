@@ -103,20 +103,8 @@ void MetaCoclass::GetMethodName(int idxMethod, char *buf) {
     String str;
     methods[idxMethod]->GetName(str);
 
-    bool moreMethod = false;
-    String str_;
-    for (int i = 0;  i < methodNumber;  i++) {
-        if (i != idxMethod) {
-            methods[i]->GetName(str_);
-            if (str.Equals(str_)) {
-                moreMethod = true;
-                break;
-            }
-        }
-    }
-
     buf[MAX_METHOD_NAME_LENGTH-1] = '\0';
-    if (moreMethod) {
+    if (overridesInfo[idxMethod]) {
         String signature;
         methods[idxMethod]->GetSignature(signature);
 
