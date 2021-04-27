@@ -46,9 +46,7 @@ public:
 
     std::string GetName();
     std::string GetComponentID();
-    int GetConstantNumber();
     std::map<std::string, py::object> GetAllConstants();
-    MetaConstant *GetConstant();
 
     std::string componentPath;
     std::vector<MetaCoclass*> como_classes;
@@ -58,38 +56,6 @@ private:
 };
 
 #pragma GCC visibility pop
-
-// MetaConstant
-///////////////////////////////
-class MetaConstant {
-public:
-    MetaConstant(AutoPtr<IMetaConstant> constant_) : constant(constant_) {}
-
-    std::string GetName();
-    std::string GetNamespace();
-    MetaType *GetType();
-    MetaValue *GetValue();
-
-private:
-    AutoPtr<IMetaConstant> constant;
-};
-
-
-class MetaType {
-public:
-    MetaType(AutoPtr<IMetaType> metaType_) : metaType(metaType_) {}
-
-private:
-    AutoPtr<IMetaType> metaType;
-};
-
-class MetaValue {
-public:
-    MetaValue(AutoPtr<IMetaValue> metaValue_) : metaValue(metaValue_) {}
-
-private:
-    AutoPtr<IMetaValue> metaValue;
-};
 
 // MetaCoclass
 ///////////////////////////////

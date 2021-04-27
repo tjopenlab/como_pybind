@@ -32,10 +32,6 @@ std::string MetaComponent::GetComponentID() {
     return std::string(str.string());
 }
 
-int MetaComponent::GetConstantNumber() {
-    return 0;
-}
-
 std::map<std::string, py::object> MetaComponent::GetAllConstants() {
     Integer constantNumber;
     componentHandle->GetConstantNumber(constantNumber);
@@ -43,10 +39,6 @@ std::map<std::string, py::object> MetaComponent::GetAllConstants() {
     componentHandle->GetAllConstants(constants);
 
     return constantsToMap(constants);
-}
-
-MetaConstant *MetaComponent::GetConstant() {
-    return nullptr;
 }
 
 void MetaComponent::GetAllCoclasses() {
@@ -59,29 +51,6 @@ void MetaComponent::GetAllCoclasses() {
         metaCoclass = new MetaCoclass(klasses[i]);
         como_classes.push_back(metaCoclass);
     }
-}
-
-// MetaConstant
-///////////////////////////////
-std::string MetaConstant::GetName() {
-    String str;
-    constant->GetName(str);
-    return std::string(str.string());
-}
-
-std::string MetaConstant::GetNamespace() {
-    String ns;
-    constant->GetNamespace(ns);
-    ns = ns.Replace("::", ".");
-    return std::string(ns.string());
-}
-
-MetaType *MetaConstant::GetType() {
-    return nullptr;
-}
-
-MetaValue *MetaConstant::GetValue() {
-    return nullptr;
 }
 
 // MetaCoclass
