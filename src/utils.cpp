@@ -39,69 +39,60 @@ std::map<std::string, py::object> constantsToMap(Array<IMetaConstant*> &constant
         type->GetTypeKind(kind);
 
         switch (kind) {
-            case TypeKind::Byte:
-                {
-                    Byte byte;
-                    value->GetByteValue(byte);
-                    out.insert({strName, py::int_(byte)});
-                }
+            case TypeKind::Byte: {
+                Byte byte;
+                value->GetByteValue(byte);
+                out.insert({strName, py::int_(byte)});
                 break;
-            case TypeKind::Short:
-                {
-                    Short svalue;
-                    value->GetShortValue(svalue);
-                    out.insert({strName, py::int_(svalue)});
-                }
+            }
+            case TypeKind::Short: {
+                Short svalue;
+                value->GetShortValue(svalue);
+                out.insert({strName, py::int_(svalue)});
                 break;
-            case TypeKind::Integer:
-                {
-                    Integer ivalue;
-                    value->GetIntegerValue(ivalue);
-                    out.insert({strName, py::int_(ivalue)});
-                }
+            }
+            case TypeKind::Integer: {
+                Integer ivalue;
+                value->GetIntegerValue(ivalue);
+                out.insert({strName, py::int_(ivalue)});
                 break;
-            case TypeKind::Long:
-                {
-                    Long lvalue;
-                    value->GetLongValue(lvalue);
-                    out.insert({strName, py::int_(lvalue)});
-                }
+            }
+            case TypeKind::Long: {
+                Long lvalue;
+                value->GetLongValue(lvalue);
+                out.insert({strName, py::int_(lvalue)});
                 break;
-            case TypeKind::Float:
-                {
-                    Float fvalue;
-                    value->GetFloatValue(fvalue);
-                    out.insert({strName, py::float_(fvalue)});
-                }
+            }
+            case TypeKind::Float: {
+                Float fvalue;
+                value->GetFloatValue(fvalue);
+                out.insert({strName, py::float_(fvalue)});
                 break;
-            case TypeKind::Double:
-                {
-                    Double dvalue;
-                    value->GetDoubleValue(dvalue);
-                    out.insert({strName, py::float_(dvalue)});
-                }
+            }
+            case TypeKind::Double: {
+                Double dvalue;
+                value->GetDoubleValue(dvalue);
+                out.insert({strName, py::float_(dvalue)});
                 break;
-            case TypeKind::Char:
-                {
-                    Char cvalue;
-                    value->GetCharValue(cvalue);
-                    out.insert({strName, py::int_(cvalue)});
-                }
+            }
+            case TypeKind::Char: {
+                Char cvalue;
+                value->GetCharValue(cvalue);
+                out.insert({strName, py::int_(cvalue)});
                 break;
-            case TypeKind::Boolean:
-                {
-                    Boolean b;
-                    value->GetBooleanValue(b);
-                    out.insert({strName, py::bool_(b)});
-                }
+            }
+            case TypeKind::Boolean: {
+                Boolean b;
+                value->GetBooleanValue(b);
+                out.insert({strName, py::bool_(b)});
                 break;
-            case TypeKind::String:
-                {
-                    String str;
-                    value->GetStringValue(str);
-                    out.insert({strName, py::str(str)});
-                }
+            }
+            case TypeKind::String: {
+                String str;
+                value->GetStringValue(str);
+                out.insert({strName, py::str(str)});
                 break;
+            }
             case TypeKind::HANDLE:
             case TypeKind::CoclassID:
             case TypeKind::ComponentID:
