@@ -330,8 +330,6 @@ py::tuple ComoPyClassStub::methodimpl(IMetaMethod *method, py::args args, py::kw
                     argList->SetOutputArgumentOfString(i, outResult[i]);
                     break;
                 case TypeKind::Interface: {
-                    AutoPtr<IMetaCoclass> mCoclass_;
-                    String name, ns;
                     std::map<std::string, py::class_<ComoPyClassStub>>::iterator iter;
 
                     if (signatureBreak.empty()) {
@@ -345,7 +343,7 @@ py::tuple ComoPyClassStub::methodimpl(IMetaMethod *method, py::args args, py::kw
                         argList->SetOutputArgumentOfInterface(i, outResult[i]);
                     }
                     else {
-                        throw std::runtime_error("no COMO class: " + name);
+                        throw std::runtime_error("no COMO class: " + signatureBreak[i]);
                     }
                     outResult[i] = reinterpret_cast<HANDLE>(malloc(sizeof(IInterface*)));
                     argList->SetOutputArgumentOfInterface(i, outResult[i]);

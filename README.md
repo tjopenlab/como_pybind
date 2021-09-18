@@ -24,6 +24,12 @@ python通过反射机制调用COMO构件，不需要COMO做任何改变，写出
 ```shell
 pip install como_pybind
 ```
+or
+```shell
+python setup.py install
+```
+
+
 #### 使用说明
 ```python
 import como_pybind
